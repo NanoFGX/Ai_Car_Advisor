@@ -18,54 +18,54 @@ const STORAGE_KEY = "car-advisor-prototype";
 
 const CAR_CATALOG = [
     // ── Perodua ───────────────────────────────────────────
-    { name: "Perodua Axia",          brand: "Perodua",   type: "City Compact",          price: 38600,  details: { engine: "1.0L 3-cyl",      trans: "AMT",   fuel: "18.9 km/L", seats: 5 } },
-    { name: "Perodua Bezza",         brand: "Perodua",   type: "Fuel Efficient Sedan",  price: 47200,  details: { engine: "1.0L 3-cyl",      trans: "CVT",   fuel: "20.6 km/L", seats: 5 } },
-    { name: "Perodua Myvi",          brand: "Perodua",   type: "Reliable Hatchback",    price: 54200,  details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "17.4 km/L", seats: 5 } },
-    { name: "Perodua Ativa",         brand: "Perodua",   type: "Compact SUV",           price: 62000,  details: { engine: "1.0L Turbo",      trans: "CVT",   fuel: "19.6 km/L", seats: 5 } },
-    { name: "Perodua Alza",          brand: "Perodua",   type: "Family MPV",            price: 63000,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "17.9 km/L", seats: 7 } },
-    { name: "Perodua Aruz",          brand: "Perodua",   type: "7-Seater SUV",          price: 74500,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.8 km/L", seats: 7 } },
+    { name: "Perodua Axia",          brand: "Perodua",   type: "City Compact",          price: 38600,  tank: 35, details: { engine: "1.0L 3-cyl",      trans: "AMT",   fuel: "18.9 km/L", seats: 5 } },
+    { name: "Perodua Bezza",         brand: "Perodua",   type: "Fuel Efficient Sedan",  price: 47200,  tank: 37, details: { engine: "1.0L 3-cyl",      trans: "CVT",   fuel: "20.6 km/L", seats: 5 } },
+    { name: "Perodua Myvi",          brand: "Perodua",   type: "Reliable Hatchback",    price: 54200,  tank: 35, details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "17.4 km/L", seats: 5 } },
+    { name: "Perodua Ativa",         brand: "Perodua",   type: "Compact SUV",           price: 62000,  tank: 37, details: { engine: "1.0L Turbo",      trans: "CVT",   fuel: "19.6 km/L", seats: 5 } },
+    { name: "Perodua Alza",          brand: "Perodua",   type: "Family MPV",            price: 63000,  tank: 43, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "17.9 km/L", seats: 7 } },
+    { name: "Perodua Aruz",          brand: "Perodua",   type: "7-Seater SUV",          price: 74500,  tank: 47, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.8 km/L", seats: 7 } },
 
     // ── Proton ────────────────────────────────────────────
-    { name: "Proton Saga",           brand: "Proton",    type: "Budget Sedan",          price: 39800,  details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "16.5 km/L", seats: 5 } },
-    { name: "Proton Iriz",           brand: "Proton",    type: "Urban Hatchback",       price: 42500,  details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "16.1 km/L", seats: 5 } },
-    { name: "Proton Persona",        brand: "Proton",    type: "Value Sedan",           price: 49800,  details: { engine: "1.6L 4-cyl",      trans: "CVT",   fuel: "15.7 km/L", seats: 5 } },
-    { name: "Proton Exora",          brand: "Proton",    type: "Family MPV",            price: 68800,  details: { engine: "1.6L Turbo",      trans: "CVT",   fuel: "13.2 km/L", seats: 7 } },
-    { name: "Proton Ertiga",         brand: "Proton",    type: "7-Seater MPV",          price: 70800,  details: { engine: "1.5L 4-cyl",      trans: "4AT",   fuel: "14.9 km/L", seats: 7 } },
-    { name: "Proton S70",            brand: "Proton",    type: "Premium Sedan",         price: 73800,  details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "16.9 km/L", seats: 5 } },
-    { name: "Proton X50",            brand: "Proton",    type: "Compact SUV",           price: 79200,  details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "16.8 km/L", seats: 5 } },
-    { name: "Proton X90",            brand: "Proton",    type: "3-Row Premium SUV",     price: 99800,  details: { engine: "1.5L Turbo PHEV", trans: "DHT",   fuel: "32.3 km/L", seats: 7 } },
-    { name: "Proton X70",            brand: "Proton",    type: "Premium SUV",           price: 103800, details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "14.9 km/L", seats: 5 } },
+    { name: "Proton Saga",           brand: "Proton",    type: "Budget Sedan",          price: 39800,  tank: 40, details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "16.5 km/L", seats: 5 } },
+    { name: "Proton Iriz",           brand: "Proton",    type: "Urban Hatchback",       price: 42500,  tank: 40, details: { engine: "1.3L 4-cyl",      trans: "CVT",   fuel: "16.1 km/L", seats: 5 } },
+    { name: "Proton Persona",        brand: "Proton",    type: "Value Sedan",           price: 49800,  tank: 40, details: { engine: "1.6L 4-cyl",      trans: "CVT",   fuel: "15.7 km/L", seats: 5 } },
+    { name: "Proton Exora",          brand: "Proton",    type: "Family MPV",            price: 68800,  tank: 50, details: { engine: "1.6L Turbo",      trans: "CVT",   fuel: "13.2 km/L", seats: 7 } },
+    { name: "Proton Ertiga",         brand: "Proton",    type: "7-Seater MPV",          price: 70800,  tank: 43, details: { engine: "1.5L 4-cyl",      trans: "4AT",   fuel: "14.9 km/L", seats: 7 } },
+    { name: "Proton S70",            brand: "Proton",    type: "Premium Sedan",         price: 73800,  tank: 45, details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "16.9 km/L", seats: 5 } },
+    { name: "Proton X50",            brand: "Proton",    type: "Compact SUV",           price: 79200,  tank: 45, details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "16.8 km/L", seats: 5 } },
+    { name: "Proton X90",            brand: "Proton",    type: "3-Row Premium SUV",     price: 99800,  tank: 35, details: { engine: "1.5L Turbo PHEV", trans: "DHT",   fuel: "32.3 km/L", seats: 7 } },
+    { name: "Proton X70",            brand: "Proton",    type: "Premium SUV",           price: 103800, tank: 48, details: { engine: "1.5L Turbo",      trans: "7DCT",  fuel: "14.9 km/L", seats: 5 } },
 
     // ── Toyota ────────────────────────────────────────────
-    { name: "Toyota Avanza",         brand: "Toyota",    type: "7-Seater MPV",          price: 83880,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.2 km/L", seats: 7 } },
-    { name: "Toyota Vios",           brand: "Toyota",    type: "Reliable Sedan",        price: 89900,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "17.1 km/L", seats: 5 } },
-    { name: "Toyota Rush",           brand: "Toyota",    type: "7-Seater SUV",          price: 93400,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.0 km/L", seats: 7 } },
-    { name: "Toyota Raize",          brand: "Toyota",    type: "Compact SUV",           price: 95000,  details: { engine: "1.0L Turbo",      trans: "CVT",   fuel: "17.0 km/L", seats: 5 } },
-    { name: "Toyota Hilux",          brand: "Toyota",    type: "Pickup Truck",          price: 100000, details: { engine: "2.4L Diesel",     trans: "6AT",   fuel: "12.5 km/L", seats: 5 } },
-    { name: "Toyota Corolla Cross",  brand: "Toyota",    type: "Hybrid SUV",            price: 139880, details: { engine: "1.8L Hybrid",     trans: "CVT",   fuel: "23.3 km/L", seats: 5 } },
-    { name: "Toyota Innova Zenix",   brand: "Toyota",    type: "Premium MPV",           price: 155880, details: { engine: "2.0L Hybrid",     trans: "CVT",   fuel: "21.0 km/L", seats: 7 } },
-    { name: "Toyota Fortuner",       brand: "Toyota",    type: "Full-Size SUV",         price: 199880, details: { engine: "2.4L Diesel",     trans: "6AT",   fuel: "12.8 km/L", seats: 7 } },
-    { name: "Toyota Camry",          brand: "Toyota",    type: "Executive Sedan",       price: 199900, details: { engine: "2.5L Hybrid",     trans: "CVT",   fuel: "20.0 km/L", seats: 5 } },
-    { name: "Toyota Alphard",        brand: "Toyota",    type: "Luxury MPV",            price: 498000, details: { engine: "2.5L Hybrid",     trans: "CVT",   fuel: "17.4 km/L", seats: 7 } },
+    { name: "Toyota Avanza",         brand: "Toyota",    type: "7-Seater MPV",          price: 83880,  tank: 45, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.2 km/L", seats: 7 } },
+    { name: "Toyota Vios",           brand: "Toyota",    type: "Reliable Sedan",        price: 89900,  tank: 42, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "17.1 km/L", seats: 5 } },
+    { name: "Toyota Rush",           brand: "Toyota",    type: "7-Seater SUV",          price: 93400,  tank: 45, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "14.0 km/L", seats: 7 } },
+    { name: "Toyota Raize",          brand: "Toyota",    type: "Compact SUV",           price: 95000,  tank: 36, details: { engine: "1.0L Turbo",      trans: "CVT",   fuel: "17.0 km/L", seats: 5 } },
+    { name: "Toyota Hilux",          brand: "Toyota",    type: "Pickup Truck",          price: 100000, tank: 80, details: { engine: "2.4L Diesel",     trans: "6AT",   fuel: "12.5 km/L", seats: 5 } },
+    { name: "Toyota Corolla Cross",  brand: "Toyota",    type: "Hybrid SUV",            price: 139880, tank: 43, details: { engine: "1.8L Hybrid",     trans: "CVT",   fuel: "23.3 km/L", seats: 5 } },
+    { name: "Toyota Innova Zenix",   brand: "Toyota",    type: "Premium MPV",           price: 155880, tank: 52, details: { engine: "2.0L Hybrid",     trans: "CVT",   fuel: "21.0 km/L", seats: 7 } },
+    { name: "Toyota Fortuner",       brand: "Toyota",    type: "Full-Size SUV",         price: 199880, tank: 80, details: { engine: "2.4L Diesel",     trans: "6AT",   fuel: "12.8 km/L", seats: 7 } },
+    { name: "Toyota Camry",          brand: "Toyota",    type: "Executive Sedan",       price: 199900, tank: 50, details: { engine: "2.5L Hybrid",     trans: "CVT",   fuel: "20.0 km/L", seats: 5 } },
+    { name: "Toyota Alphard",        brand: "Toyota",    type: "Luxury MPV",            price: 498000, tank: 75, details: { engine: "2.5L Hybrid",     trans: "CVT",   fuel: "17.4 km/L", seats: 7 } },
 
     // ── Honda ─────────────────────────────────────────────
-    { name: "Honda City Hatchback",  brand: "Honda",     type: "Premium Hatchback",     price: 81900,  details: { engine: "1.5L RS Turbo",   trans: "CVT",   fuel: "17.9 km/L", seats: 5 } },
-    { name: "Honda City",            brand: "Honda",     type: "Compact Sedan",         price: 83900,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "18.5 km/L", seats: 5 } },
-    { name: "Honda WR-V",            brand: "Honda",     type: "Urban SUV",             price: 89900,  details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "16.2 km/L", seats: 5 } },
-    { name: "Honda BR-V",            brand: "Honda",     type: "7-Seater SUV",          price: 104900, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "15.5 km/L", seats: 7 } },
-    { name: "Honda HR-V",            brand: "Honda",     type: "Compact SUV",           price: 114800, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "16.8 km/L", seats: 5 } },
-    { name: "Honda Civic",           brand: "Honda",     type: "Sporty Sedan",          price: 125900, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "17.0 km/L", seats: 5 } },
-    { name: "Honda ZR-V",            brand: "Honda",     type: "Sporty SUV",            price: 139900, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "16.5 km/L", seats: 5 } },
-    { name: "Honda CR-V",            brand: "Honda",     type: "Premium SUV",           price: 166900, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "14.9 km/L", seats: 5 } },
-    { name: "Honda Accord",          brand: "Honda",     type: "Executive Sedan",       price: 197900, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "17.6 km/L", seats: 5 } },
-    { name: "Honda e:N1",            brand: "Honda",     type: "Electric SUV",          price: 219900, details: { engine: "Electric 204hp",  trans: "Single",fuel: "~5.8 kWh/100km", seats: 5 } },
+    { name: "Honda City Hatchback",  brand: "Honda",     type: "Premium Hatchback",     price: 81900,  tank: 40, details: { engine: "1.5L RS Turbo",   trans: "CVT",   fuel: "17.9 km/L", seats: 5 } },
+    { name: "Honda City",            brand: "Honda",     type: "Compact Sedan",         price: 83900,  tank: 40, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "18.5 km/L", seats: 5 } },
+    { name: "Honda WR-V",            brand: "Honda",     type: "Urban SUV",             price: 89900,  tank: 40, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "16.2 km/L", seats: 5 } },
+    { name: "Honda BR-V",            brand: "Honda",     type: "7-Seater SUV",          price: 104900, tank: 40, details: { engine: "1.5L 4-cyl",      trans: "CVT",   fuel: "15.5 km/L", seats: 7 } },
+    { name: "Honda HR-V",            brand: "Honda",     type: "Compact SUV",           price: 114800, tank: 40, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "16.8 km/L", seats: 5 } },
+    { name: "Honda Civic",           brand: "Honda",     type: "Sporty Sedan",          price: 125900, tank: 47, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "17.0 km/L", seats: 5 } },
+    { name: "Honda ZR-V",            brand: "Honda",     type: "Sporty SUV",            price: 139900, tank: 47, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "16.5 km/L", seats: 5 } },
+    { name: "Honda CR-V",            brand: "Honda",     type: "Premium SUV",           price: 166900, tank: 57, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "14.9 km/L", seats: 5 } },
+    { name: "Honda Accord",          brand: "Honda",     type: "Executive Sedan",       price: 197900, tank: 47, details: { engine: "1.5L Turbo",      trans: "CVT",   fuel: "17.6 km/L", seats: 5 } },
+    { name: "Honda e:N1",            brand: "Honda",     type: "Electric SUV",          price: 219900, tank: 0,  details: { engine: "Electric 204hp",  trans: "Single",fuel: "~5.8 kWh/100km", seats: 5 } },
 
     // ── Used Car ──────────────────────────────────────────
-    { name: "Used Car – Economy",    brand: "Used Car",  type: "Budget Pre-owned",      price: 18000,  details: { engine: "1.0–1.3L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
-    { name: "Used Car – Compact",    brand: "Used Car",  type: "Pre-owned Hatchback",   price: 28000,  details: { engine: "1.3–1.5L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
-    { name: "Used Car – Sedan",      brand: "Used Car",  type: "Pre-owned Sedan",       price: 38000,  details: { engine: "1.5–1.6L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
-    { name: "Used Car – MPV/SUV",    brand: "Used Car",  type: "Pre-owned SUV",         price: 55000,  details: { engine: "1.5–2.0L",        trans: "Auto",  fuel: "Varies",    seats: 7 } },
-    { name: "Used Car – Premium",    brand: "Used Car",  type: "Certified Pre-owned",   price: 78000,  details: { engine: "2.0L+",           trans: "Auto",  fuel: "Varies",    seats: 5 } },
+    { name: "Used Car – Economy",    brand: "Used Car",  type: "Budget Pre-owned",      price: 18000,  tank: 35, details: { engine: "1.0–1.3L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
+    { name: "Used Car – Compact",    brand: "Used Car",  type: "Pre-owned Hatchback",   price: 28000,  tank: 40, details: { engine: "1.3–1.5L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
+    { name: "Used Car – Sedan",      brand: "Used Car",  type: "Pre-owned Sedan",       price: 38000,  tank: 40, details: { engine: "1.5–1.6L",        trans: "Auto",  fuel: "Varies",    seats: 5 } },
+    { name: "Used Car – MPV/SUV",    brand: "Used Car",  type: "Pre-owned SUV",         price: 55000,  tank: 45, details: { engine: "1.5–2.0L",        trans: "Auto",  fuel: "Varies",    seats: 7 } },
+    { name: "Used Car – Premium",    brand: "Used Car",  type: "Certified Pre-owned",   price: 78000,  tank: 45, details: { engine: "2.0L+",           trans: "Auto",  fuel: "Varies",    seats: 5 } },
 ];
 
 const DEALERS = [
@@ -116,9 +116,67 @@ const baseForm = {
     monthlyCommitments: "",
     desiredCarPrice: "",
     preferredBrand: "Perodua",
+    budi95Eligible: "no",
 };
 
 const formatRM = (value) => `RM ${Number(value || 0).toLocaleString("en-MY")}`;
+
+const MONTHLY_KM = 1500;
+
+const parseEngineCC = (engineStr) => {
+    if (!engineStr) return 1500;
+    if (engineStr.toLowerCase().includes("electric")) return 0;
+    const m = engineStr.match(/(\d+\.?\d*)\s*[Ll]/);
+    return m ? Math.round(parseFloat(m[1]) * 1000) : 1500;
+};
+
+const parseFuelEfficiency = (fuelStr) => {
+    if (!fuelStr || fuelStr === "Varies" || fuelStr.includes("kWh")) return null;
+    const m = fuelStr.match(/(\d+\.?\d*)\s*km\/L/i);
+    return m ? parseFloat(m[1]) : null;
+};
+
+// Returns { cost, liters } or null for electric
+const calcMonthlyFuelCost = (car, eligible) => {
+    const pricePerLiter = eligible === "yes" ? 1.99 : 2.60;
+    if (car.details?.fuel?.includes("kWh")) return null; // electric
+    const efficiency = parseFuelEfficiency(car.details?.fuel);
+    if (efficiency) {
+        const liters = Math.round((MONTHLY_KM / efficiency) * 10) / 10;
+        return { cost: Math.round(liters * pricePerLiter * 100) / 100, liters };
+    }
+    // Fallback for "Varies" used cars — use tank × 4
+    if (car.tank) {
+        const liters = car.tank * 4;
+        return { cost: Math.round(liters * pricePerLiter * 100) / 100, liters };
+    }
+    return null;
+};
+
+const calcAnnualRoadTax = (engineStr) => {
+    const cc = parseEngineCC(engineStr);
+    if (cc === 0) return 20;
+    if (cc <= 1000) return 20;
+    if (cc <= 1200) return 55;
+    if (cc <= 1400) return 70;
+    if (cc <= 1600) return 90;
+    if (cc <= 1800) return 200;
+    if (cc <= 2000) return 280;
+    if (cc <= 2500) return 380;
+    return 380 + (cc - 2500);
+};
+
+const calcAnnualInsurance = (price) =>
+    Math.round(price * 0.025 + 300);
+
+const calcAnnualService = (engineStr) => {
+    const cc = parseEngineCC(engineStr);
+    if (cc === 0) return 600;
+    if (cc <= 1300) return 800;
+    if (cc <= 1600) return 1200;
+    if (cc <= 2000) return 1800;
+    return 2400;
+};
 
 const loadStored = () => {
     try {
@@ -163,12 +221,24 @@ function calculateAnalysis(form) {
     const scenarioAPrice = targetCar || Math.max(safeCarBudgetHigh + 30000, 80000);
     const scenarioBPrice = Math.min(Math.max(safeCarBudgetLow, 30000), safeCarBudgetHigh);
 
-    const recommendedCars = CAR_CATALOG.filter((car) => {
-        const brandMatch = form.preferredBrand === "Any" || car.brand === form.preferredBrand;
-        return brandMatch && car.price >= safeCarBudgetLow * 0.75 && car.price <= safeCarBudgetHigh * 1.2;
-    }).slice(0, 3);
+    const recommendedCars = (() => {
+        const brandAndBudget = CAR_CATALOG.filter((car) => {
+            const brandMatch = form.preferredBrand === "Any" || car.brand === form.preferredBrand;
+            return brandMatch && car.price >= safeCarBudgetLow * 0.75 && car.price <= safeCarBudgetHigh * 1.2;
+        });
+        if (brandAndBudget.length) return brandAndBudget.slice(0, 3);
 
-    const fallbackCars       = CAR_CATALOG.filter((car) => car.price <= safeCarBudgetHigh).slice(0, 3);
+        // Brand matches but none fit the budget — show the brand's cars sorted by price proximity
+        const brandOnly = CAR_CATALOG.filter((car) =>
+            form.preferredBrand === "Any" || car.brand === form.preferredBrand
+        ).sort((a, b) => Math.abs(a.price - safeCarBudgetHigh) - Math.abs(b.price - safeCarBudgetHigh));
+        if (brandOnly.length) return brandOnly.slice(0, 3);
+
+        // Last resort — any brand within budget
+        return CAR_CATALOG.filter((car) => car.price <= safeCarBudgetHigh).slice(0, 3);
+    })();
+
+    const fallbackCars = recommendedCars;
     const recommendedDealers = DEALERS.filter((dealer) =>
         form.preferredBrand === "Any" ? true : dealer.brand === form.preferredBrand || dealer.brand === "Used Car"
     );
@@ -257,11 +327,12 @@ function Shell({ page, setPage, onReset, children }) {
 
 function App() {
     const stored = useMemo(() => loadStored(), []);
-    const [page, setPage]   = useState(stored?.page || "home");
-    const [form, setForm]   = useState(stored?.form || baseForm);
-    const [dp,   setDp]     = useState(15);
-    const [years, setYears] = useState(7);
-    const [rate,  setRate]  = useState(3.2);
+    const [page, setPage]         = useState(stored?.page || "home");
+    const [form, setForm]         = useState(stored?.form || baseForm);
+    const [dp,   setDp]           = useState(0);
+    const [years, setYears]       = useState(7);
+    const [rate,  setRate]        = useState(0);
+    const [selectedCar, setSelectedCar] = useState(null);
     const analysis = useMemo(() => calculateAnalysis(form), [form]);
 
     useEffect(() => { saveStored({ page, form }); }, [page, form]);
@@ -418,6 +489,15 @@ function App() {
                                     {BRANDS.map((b) => <option key={b}>{b}</option>)}
                                 </select>
                             </label>
+                            <label className="reveal md:col-span-2" style={{ animationDelay: "460ms" }}>
+                                <span className="mb-2 block text-sm text-slate-600">Are you eligible for BUDI95?</span>
+                                <select value={form.budi95Eligible}
+                                    onChange={(e) => setForm((p) => ({ ...p, budi95Eligible: e.target.value }))}
+                                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </label>
                         </div>
                         <button onClick={() => setPage("analysis")}
                             className="btn-animated mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white">
@@ -570,13 +650,13 @@ function App() {
                                     <div className="mb-2 flex justify-between text-sm text-slate-600">
                                         <span>Down payment</span><span>{dp}%</span>
                                     </div>
-                                    <input type="range" min="5" max="40" value={dp} onChange={(e) => setDp(Number(e.target.value))} className="w-full accent-slate-900" />
+                                    <input type="range" min="0" max="40" value={dp} onChange={(e) => setDp(Number(e.target.value))} className="w-full accent-slate-900" />
                                 </label>
                                 <label>
                                     <div className="mb-2 flex justify-between text-sm text-slate-600">
                                         <span>Interest rate</span><span>{rate.toFixed(1)}%</span>
                                     </div>
-                                    <input type="range" min="2.3" max="6" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-slate-900" />
+                                    <input type="range" min="0" max="6" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-slate-900" />
                                 </label>
                                 <label>
                                     <div className="mb-2 text-sm text-slate-600">Loan tenure</div>
@@ -597,7 +677,10 @@ function App() {
                         {analysis.recommendedCars.map((car, i) => {
                             const brandFit = form.preferredBrand === "Any" || car.brand === form.preferredBrand;
                             return (
-                                <div key={car.name} className={`${panel} card-pop reveal`} style={{ animationDelay: `${80 + i * 90}ms` }}>
+                                <div key={car.name}
+                                    onClick={() => { setSelectedCar(car); setPage("car-detail"); }}
+                                    className={`${panel} card-pop reveal cursor-pointer hover:shadow-[0_24px_64px_rgba(15,23,42,0.14)] hover:-translate-y-1 transition-transform`}
+                                    style={{ animationDelay: `${80 + i * 90}ms` }}>
                                     <div className="flex items-center justify-between gap-2">
                                         <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{car.brand}</div>
                                         <div className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${brandFit ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
@@ -622,10 +705,74 @@ function App() {
                                             ))}
                                         </div>
                                     )}
+                                    {(() => {
+                                        const fr = calcMonthlyFuelCost(car, form.budi95Eligible);
+                                        if (!fr) return (
+                                            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2">
+                                                <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Monthly Fuel</div>
+                                                <div className="mt-0.5 text-sm font-bold text-slate-500">Electric — no fuel</div>
+                                            </div>
+                                        );
+                                        return (
+                                            <div className="mt-3 rounded-xl border border-sky-200 bg-sky-50 px-3 py-2">
+                                                <div className="text-[10px] font-semibold uppercase tracking-wide text-sky-500">Est. Monthly Fuel</div>
+                                                <div className="mt-0.5 text-sm font-bold text-sky-700">
+                                                    RM {fr.cost.toFixed(2)}
+                                                    <span className="ml-1 text-[10px] font-normal text-sky-500">~{fr.liters}L / {MONTHLY_KM} km</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+                                    <div className="mt-3 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">Tap for full financial details →</div>
                                 </div>
                             );
                         })}
                     </section>
+
+                    {/* ── Monthly Fuel Expenses ─────────────────────── */}
+                    <div className={`${panel} card-pop reveal s4`}>
+                        <div className="flex items-center gap-2 text-2xl font-bold text-slate-900">
+                            <span className="inline-flex rounded-2xl bg-sky-100 p-2 text-sky-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h2l2 7h10l2-7h2M7 10V6a4 4 0 018 0v4" />
+                                </svg>
+                            </span>
+                            Monthly Fuel Expenses
+                        </div>
+                        <p className="mt-2 text-sm text-slate-500">
+                            Based on filling up once a week (4 times/month).{" "}
+                            {form.budi95Eligible === "yes"
+                                ? <span className="font-semibold text-emerald-600">BUDI95 eligible — RM 1.99/L</span>
+                                : <span className="font-semibold text-rose-500">Not BUDI95 eligible — RM 2.60/L</span>}
+                        </p>
+                        <p className="mt-1 text-xs text-slate-400">Based on {MONTHLY_KM} km/month driven, using actual fuel efficiency ratings.</p>
+                        <div className="mt-5 grid gap-4 md:grid-cols-3">
+                            {analysis.recommendedCars.map((car, i) => {
+                                const fr = calcMonthlyFuelCost(car, form.budi95Eligible);
+                                return (
+                                    <div key={car.name} className="reveal rounded-2xl border border-slate-200 bg-slate-50 p-4" style={{ animationDelay: `${80 + i * 80}ms` }}>
+                                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{car.name}</div>
+                                        <div className="mt-0.5 text-[10px] text-slate-400">{car.details?.fuel}</div>
+                                        {fr ? (
+                                            <>
+                                                <div className="mt-2 text-2xl font-black text-slate-900">RM {fr.cost.toFixed(2)}</div>
+                                                <div className="mt-1 text-xs text-slate-500">
+                                                    ~{fr.liters}L × RM {form.budi95Eligible === "yes" ? "1.99" : "2.60"}/L
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="mt-2 text-sm font-semibold text-slate-500">Electric — no fuel cost</div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {form.budi95Eligible !== "yes" && (
+                            <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                                You are not eligible for BUDI95. Fuel costs are calculated at the standard RON 95 price of RM 2.60/L.
+                            </p>
+                        )}
+                    </div>
 
                     <div className={`${panel} card-pop reveal s4 flex items-start gap-3`}>
                         <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
@@ -738,6 +885,175 @@ function App() {
                     </section>
                 </div>
             )}
+            {/* ── CAR DETAIL ────────────────────────────────── */}
+            {page === "car-detail" && selectedCar && (() => {
+                const car = selectedCar;
+                const carPrice = car.price;
+                const downPaymentAmt = Math.round(carPrice * (dp / 100));
+                const financedAmt    = Math.max(carPrice - downPaymentAmt, 0);
+                const monthlyEmi     = Math.round((financedAmt * (1 + (rate / 100) * years)) / Math.max(years * 12, 1));
+                const totalLoanCost  = monthlyEmi * years * 12;
+
+                const fuelResult     = calcMonthlyFuelCost(car, form.budi95Eligible);
+                const monthlyFuel    = fuelResult?.cost ?? 0;
+                const annualFuel     = Math.round(monthlyFuel * 12);
+
+                const annualIns      = calcAnnualInsurance(carPrice);
+                const monthlyIns     = Math.round(annualIns / 12);
+
+                const annualRT       = calcAnnualRoadTax(car.details?.engine || "");
+                const monthlyRT      = Math.round(annualRT / 12);
+
+                const annualSvc      = calcAnnualService(car.details?.engine || "");
+                const monthlySvc     = Math.round(annualSvc / 12);
+
+                const totalMonthly   = monthlyEmi + monthlyFuel + monthlyIns + monthlyRT + monthlySvc;
+                const totalAnnual    = (monthlyEmi * 12) + annualFuel + annualIns + annualRT + annualSvc;
+
+                const rows = [
+                    { label: "Loan Installment", monthly: monthlyEmi,  annual: monthlyEmi * 12,   color: "bg-slate-100" },
+                    { label: "Fuel Cost",         monthly: monthlyFuel, annual: annualFuel,         color: "bg-sky-50",    note: fuelResult ? `~${fuelResult.liters}L/mo` : "Electric" },
+                    { label: "Insurance",         monthly: monthlyIns,  annual: annualIns,          color: "bg-violet-50", note: "Est. comprehensive" },
+                    { label: "Road Tax",          monthly: monthlyRT,   annual: annualRT,           color: "bg-amber-50",  note: `${parseEngineCC(car.details?.engine)} cc` },
+                    { label: "Service & Maint.",  monthly: monthlySvc,  annual: annualSvc,          color: "bg-emerald-50",note: "Est. 2×/year" },
+                ];
+
+                return (
+                    <div className="space-y-6">
+                        {/* Header */}
+                        <div className={`${panel} card-pop reveal s1`}>
+                            <button onClick={() => setPage("analysis")}
+                                className="btn-animated mb-4 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm text-slate-600">
+                                ← Back to Analysis
+                            </button>
+                            <div className="flex flex-wrap items-start justify-between gap-4">
+                                <div>
+                                    <div className="text-xs font-semibold uppercase tracking-widest text-slate-400">{car.brand} · {car.type}</div>
+                                    <h1 className="mt-1 text-4xl font-black md:text-5xl">{car.name}</h1>
+                                    <div className="mt-2 text-3xl font-bold text-slate-700">{formatRM(carPrice)}</div>
+                                </div>
+                                <div className="rounded-2xl bg-slate-900 px-6 py-4 text-white">
+                                    <div className="text-xs uppercase tracking-widest text-slate-300">Total Monthly Cost</div>
+                                    <div className="mt-1 text-4xl font-black">{formatRM(totalMonthly)}</div>
+                                    <div className="mt-1 text-xs text-slate-400">All-in ownership estimate</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Spec strip */}
+                        {car.details && (
+                            <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                                {[
+                                    { label: "Engine",  value: car.details.engine },
+                                    { label: "Trans",   value: car.details.trans  },
+                                    { label: "Fuel eff.",value: car.details.fuel  },
+                                    { label: "Seats",   value: `${car.details.seats} seats` },
+                                ].map(({ label, value }) => (
+                                    <div key={label} className={`${panel} card-pop reveal py-4 text-center`}>
+                                        <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</div>
+                                        <div className="mt-1 text-sm font-bold text-slate-800">{value}</div>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+
+                        {/* Monthly + Annual breakdown */}
+                        <section className="grid gap-4 md:grid-cols-2">
+                            {/* Monthly */}
+                            <div className={`${panel} card-pop reveal s2`}>
+                                <div className="text-xl font-bold text-slate-900">Monthly Breakdown</div>
+                                <div className="mt-4 space-y-2">
+                                    {rows.map(({ label, monthly, color, note }) => (
+                                        <div key={label} className={`flex items-center justify-between rounded-2xl ${color} px-4 py-3`}>
+                                            <div>
+                                                <div className="text-sm font-semibold text-slate-700">{label}</div>
+                                                {note && <div className="text-[10px] text-slate-400">{note}</div>}
+                                            </div>
+                                            <div className="text-base font-bold text-slate-900">
+                                                {monthly > 0 ? formatRM(monthly) : <span className="text-slate-400 text-sm">—</span>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="flex items-center justify-between rounded-2xl bg-slate-900 px-4 py-3 text-white">
+                                        <div className="font-bold">Total / Month</div>
+                                        <div className="text-xl font-black">{formatRM(totalMonthly)}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Annual */}
+                            <div className={`${panel} card-pop reveal s3`}>
+                                <div className="text-xl font-bold text-slate-900">Annual Breakdown</div>
+                                <div className="mt-4 space-y-2">
+                                    {rows.map(({ label, annual, color, note }) => (
+                                        <div key={label} className={`flex items-center justify-between rounded-2xl ${color} px-4 py-3`}>
+                                            <div>
+                                                <div className="text-sm font-semibold text-slate-700">{label}</div>
+                                                {note && <div className="text-[10px] text-slate-400">{note}</div>}
+                                            </div>
+                                            <div className="text-base font-bold text-slate-900">
+                                                {annual > 0 ? formatRM(annual) : <span className="text-slate-400 text-sm">—</span>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div className="flex items-center justify-between rounded-2xl bg-slate-900 px-4 py-3 text-white">
+                                        <div className="font-bold">Total / Year</div>
+                                        <div className="text-xl font-black">{formatRM(totalAnnual)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Loan Details */}
+                        <div className={`${panel} card-pop reveal s4`}>
+                            <div className="text-xl font-bold text-slate-900">Loan Details</div>
+                            <p className="mt-1 text-sm text-slate-500">From your What-If Financing Lab settings. Adjust them in the Analysis page.</p>
+                            <div className="mt-5 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+                                {[
+                                    { label: "Car Price",         value: formatRM(carPrice)           },
+                                    { label: "Down Payment",      value: `${formatRM(downPaymentAmt)} (${dp}%)` },
+                                    { label: "Financed Amount",   value: formatRM(financedAmt)        },
+                                    { label: "Interest Rate",     value: `${rate.toFixed(1)}% p.a.`  },
+                                    { label: "Loan Tenure",       value: `${years} years (${years * 12} months)` },
+                                    { label: "Total Loan Cost",   value: formatRM(totalLoanCost)      },
+                                ].map(({ label, value }) => (
+                                    <div key={label} className="rounded-2xl bg-slate-50 px-4 py-3">
+                                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</div>
+                                        <div className="mt-1 font-bold text-slate-900">{value}</div>
+                                    </div>
+                                ))}
+                            </div>
+                            {dp === 0 && (
+                                <div className="mt-4 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700">
+                                    Full loan — no down payment applied.
+                                </div>
+                            )}
+                            {rate === 0 && (
+                                <div className="mt-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                                    0% interest rate — installment is principal-only.
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Fuel note */}
+                        <div className={`${panel} card-pop reveal s4 flex items-start gap-3`}>
+                            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+                            <p className="text-sm text-slate-600">
+                                Fuel cost estimated at {MONTHLY_KM} km/month.
+                                Insurance is a first-year estimate (no NCD). Road tax based on engine displacement.
+                                Service cost is averaged across two services per year.
+                                All figures are estimates — actual costs may vary.
+                            </p>
+                        </div>
+
+                        <section className="flex flex-wrap gap-3">
+                            <button onClick={() => setPage("analysis")} className="btn-animated rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white">Back to Analysis</button>
+                            <button onClick={() => setPage("dealerships")} className="btn-animated rounded-full border border-slate-300 bg-white px-6 py-3 text-sm">Find Dealerships</button>
+                        </section>
+                    </div>
+                );
+            })()}
+
         </Shell>
     );
 }
