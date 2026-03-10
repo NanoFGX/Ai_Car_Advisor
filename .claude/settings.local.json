@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.perodua.com.my)",
+      "WebFetch(domain:paultan.org)",
+      "WebFetch(domain:www.proton.com)",
+      "WebFetch(domain:www.zigwheels.my)",
+      "WebFetch(domain:www.honda.com.my)",
+      "WebFetch(domain:www.zigwheels.ae)"
+    ]
+  }
+}

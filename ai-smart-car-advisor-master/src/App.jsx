@@ -4,6 +4,7 @@ import {
     ArrowRight,
     Car,
     CheckCircle2,
+    ChevronDown,
     ClipboardList,
     Landmark,
     MapPin,
@@ -101,6 +102,33 @@ const DEALERS = [
     },
 ];
 
+const SCENARIO_COLORS = {
+    red: {
+        border: "border-rose-200",
+        bg: "from-rose-50 to-rose-100/80",
+        text: "text-rose-700",
+        sub: "text-rose-500",
+        bar: "bg-rose-400",
+        expand: "bg-rose-50 border-rose-200 text-rose-800",
+    },
+    amber: {
+        border: "border-amber-200",
+        bg: "from-amber-50 to-amber-100/80",
+        text: "text-amber-700",
+        sub: "text-amber-500",
+        bar: "bg-amber-400",
+        expand: "bg-amber-50 border-amber-200 text-amber-800",
+    },
+    emerald: {
+        border: "border-emerald-200",
+        bg: "from-emerald-50 to-emerald-100/80",
+        text: "text-emerald-700",
+        sub: "text-emerald-500",
+        bar: "bg-emerald-400",
+        expand: "bg-emerald-50 border-emerald-200 text-emerald-800",
+    },
+};
+
 const NAV_ITEMS = [
     { key: "home",        label: "Home"        },
     { key: "input",       label: "Profile"     },
@@ -165,6 +193,53 @@ const calcAnnualRoadTax = (engineStr) => {
     if (cc <= 2500) return 380;
     return 380 + (cc - 2500);
 };
+
+const fp = (f) => `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}`;
+
+const CAR_IMAGE_MAP = {
+    // ── Perodua ───────────────────────────────────────────
+    "Perodua Axia":         fp("2019_Perodua_Axia_1.0_Style_(42).jpg"),
+    "Perodua Bezza":        fp("Perodua_Bezza_1.3_Advance_in_Malaysia_(1).jpg"),
+    "Perodua Myvi":         fp("Perodua_Myvi_3rd_generation.jpg"),
+    "Perodua Ativa":        fp("2021_Perodua_Ativa_H_(Malaysia)_front_view_04.jpg"),
+    "Perodua Alza":         fp("2022_Perodua_Alza_AV_GearUp_(Malaysia)_front_view_01.jpg"),
+    "Perodua Aruz":         fp("Perodua_Aruz_AV_in_Penang,_Malaysia_(2).jpg"),
+    // ── Proton ────────────────────────────────────────────
+    "Proton Saga":          fp("2022_Proton_Saga.jpg"),
+    "Proton Iriz":          fp("Proton_Iriz_2022_-_Side_profile.jpg"),
+    "Proton Persona":       fp("Proton_Persona_Elegance_on_road.jpg"),
+    "Proton Exora":         fp("2019_Proton_Exora_Executive_CVT_(6).jpg"),
+    "Proton Ertiga":        fp("Proton_Ertiga_(cropped).jpg"),
+    "Proton S70":           fp("2024_Proton_S70_(Front).jpg"),
+    "Proton X50":           fp("2020_Proton_X50_1.5_TGDi_Flagship_(front_view).png"),
+    "Proton X70":           fp("2023_Proton_X70_MC_Front.jpg"),
+    "Proton X90":           fp("2021_Proton_X70_1.8_7AT_Executive_white_front_view_in_Brunei.jpg"),
+    // ── Toyota ────────────────────────────────────────────
+    "Toyota Avanza":        fp("2021_Toyota_Avanza_1.5_G_Toyota_Safety_Sense_(Indonesia)_front_view_03.jpg"),
+    "Toyota Vios":          fp("2007_Toyota_Vios_1.5_E_02.jpg"),
+    "Toyota Rush":          fp("Toyota_Rush.jpg"),
+    "Toyota Raize":         fp("Toyota_Raize_Z.jpg"),
+    "Toyota Hilux":         fp("Toyota_Hilux_2024.jpg"),
+    "Toyota Corolla Cross": fp("Toyota_Corolla_Cross_1.8_G_2023_(6).jpg"),
+    "Toyota Innova Zenix":  fp("2022_Toyota_Kijang_Innova_Zenix_V_(Indonesia)_front_view.jpg"),
+    "Toyota Fortuner":      fp("2020_Toyota_Fortuner_2.8_Legender_4WD.jpg"),
+    "Toyota Camry":         fp("Toyota_Camry_2.5_V_HEV_Hybrid_2023_(9).jpg"),
+    "Toyota Alphard":       fp("2023_Toyota_Alphard_Hybrid_(AH40)_1.jpg"),
+    // ── Honda ─────────────────────────────────────────────
+    "Honda City Hatchback": fp("2021_Honda_City_Hatchback_RS_1.5_GN5_(20210922).jpg"),
+    "Honda City":           fp("2022_Honda_City_1.5_GN2_(20220317)_01.jpg"),
+    "Honda WR-V":           fp("2023_Honda_WR-V_RS.jpg"),
+    "Honda BR-V":           fp("2022_Honda_BR-V_1.5_E_(front).jpg"),
+    "Honda HR-V":           fp("2021_Honda_HR-V_e_HEV_RS.jpg"),
+    "Honda Civic":          fp("Civic_wiki.jpg"),
+    "Honda ZR-V":           fp("0_Honda_ZR-V_1.jpg"),
+    "Honda CR-V":           fp("Honda_CR-V_2.0_i-VTEC_Facelift_front.JPG"),
+    "Honda Accord":         fp("Honda_Accord_Executive_(27696905860).jpg"),
+    "Honda e:N1":           fp("HONDA_ZR-V_China.jpg"),
+};
+
+const getCarImage = (car) =>
+    CAR_IMAGE_MAP[car.name] || fp("Perodua_Myvi_3rd_generation.jpg");
 
 const calcAnnualInsurance = (price) =>
     Math.round(price * 0.025 + 300);
@@ -333,9 +408,11 @@ function App() {
     const [years, setYears]       = useState(7);
     const [rate,  setRate]        = useState(0);
     const [selectedCar, setSelectedCar] = useState(null);
+    const [showDangerModal, setShowDangerModal] = useState(false);
     const analysis = useMemo(() => calculateAnalysis(form), [form]);
 
     useEffect(() => { saveStored({ page, form }); }, [page, form]);
+    useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [page, selectedCar]);
 
     const reset = () => {
         setForm(baseForm);
@@ -499,8 +576,20 @@ function App() {
                                 </select>
                             </label>
                         </div>
-                        <button onClick={() => setPage("analysis")}
-                            className="btn-animated mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white">
+                        <button
+                            onClick={() => {
+                                const salary = Number(form.monthlySalary);
+                                const carPrice = Number(form.desiredCarPrice);
+
+                                if (carPrice > salary * 20) {
+                                    setShowDangerModal(true);
+                                    return;
+                                }
+
+                                setPage("analysis");
+                            }}
+                            className="btn-animated mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white"
+                        >
                             Analyze My Financial Situation <ArrowRight className="h-4 w-4" />
                         </button>
                     </div>
@@ -605,40 +694,51 @@ function App() {
                         ))}
                     </section>
 
-                    <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-                        <div className={`${panel} card-pop reveal s2`}>
-                            <div className="text-2xl font-bold">Monthly stress simulator</div>
-                            <div className="mt-5 flex h-64 items-end gap-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                                {[analysis.scenarioA, analysis.scenarioB].map((s, i) => (
-                                    <div key={s.label} className="flex flex-1 flex-col items-center gap-2">
-                                        <div className="text-xs text-slate-500">{formatRM(s.monthly)}</div>
-                                        <div className="flex h-44 w-full items-end rounded-xl bg-white p-1.5">
-                                            <div className={`bar-animate w-full rounded-lg ${i === 0 ? "bg-slate-900" : "bg-slate-400"}`}
-                                                style={{ height: `${(s.monthly / chartMax) * 100}%`, animationDelay: `${200 + i * 160}ms` }} />
-                                        </div>
-                                        <div className="text-xs text-slate-600">{i === 0 ? "Scenario A" : "Scenario B"}</div>
-                                    </div>
-                                ))}
-                            </div>
+                    <div className={`${panel} card-pop reveal s2`}>
+                        <div className="flex items-center justify-between">
+                            <div className="text-xl font-bold text-slate-900">Monthly Stress Simulator</div>
+                            <span className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-400">2 scenarios</span>
                         </div>
 
-                        <div className={`${panel} card-pop reveal s3`}>
-                            <div className="text-2xl font-bold">Scenario outcomes</div>
-                            <div className="mt-4 space-y-3">
-                                {[analysis.scenarioA, analysis.scenarioB].map((s, i) => (
-                                    <div key={s.label}
-                                        className={`card-pop reveal rounded-2xl border p-4 ${i === 0 ? "border-rose-200 bg-rose-50" : "border-emerald-200 bg-emerald-50"}`}
-                                        style={{ animationDelay: `${300 + i * 100}ms` }}>
-                                        <div className="text-xs text-slate-500">{s.label}</div>
-                                        <div className="mt-1 text-xl font-bold">{formatRM(s.monthly)} / month</div>
-                                        <div className="mt-2 inline-flex rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.16em]">
-                                            Stress: {s.stress}
+                        <div className="mt-6 grid grid-cols-2 divide-x divide-slate-100">
+                            {[analysis.scenarioA, analysis.scenarioB].map((s, i) => {
+                                const isHigh = s.stress === "HIGH";
+                                const isMed  = s.stress === "MEDIUM";
+                                const amtColor  = isHigh ? "text-rose-600"    : isMed ? "text-amber-600"    : "text-emerald-600";
+                                const barColor  = isHigh ? "bg-rose-400"      : isMed ? "bg-amber-400"      : "bg-emerald-400";
+                                const pillStyle = isHigh ? "bg-rose-100 text-rose-700" : isMed ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700";
+                                const fillPct   = (s.monthly / chartMax) * 100;
+                                return (
+                                    <div key={s.label} className={`py-2 ${i === 0 ? "pr-8" : "pl-8"}`}>
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div>
+                                                <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Scenario {i === 0 ? "A" : "B"}</div>
+                                                <div className="mt-0.5 text-xs font-medium text-slate-600">{i === 0 ? "Stretch purchase" : "Conservative"}</div>
+                                            </div>
+                                            <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${pillStyle}`}>{s.stress}</span>
+                                        </div>
+                                        <div className={`mt-4 text-4xl font-black ${amtColor}`}>{formatRM(s.monthly)}</div>
+                                        <div className="text-xs font-medium text-slate-500">per month</div>
+                                        <div className="mt-5 h-1.5 w-full rounded-full bg-slate-200">
+                                            <div className={`h-full rounded-full bar-animate ${barColor}`}
+                                                style={{ width: `${fillPct}%`, animationDelay: `${200 + i * 150}ms` }} />
+                                        </div>
+                                        <div className="mt-1.5 flex justify-between text-[10px] font-medium text-slate-400">
+                                            <span>RM 0</span><span>{formatRM(chartMax)}</span>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                );
+                            })}
                         </div>
-                    </section>
+
+                        <div className="mt-6 flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4">
+                            <span className="text-sm text-slate-500">Choosing B saves you</span>
+                            <span className="text-xl font-black text-slate-900">
+                                {formatRM(Math.abs(analysis.scenarioA.monthly - analysis.scenarioB.monthly))}
+                                <span className="text-sm font-normal text-slate-400"> / month</span>
+                            </span>
+                        </div>
+                    </div>
 
                     <div className={`${panel} card-pop reveal s3`}>
                         <div className="inline-flex rounded-full border border-slate-300 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
@@ -679,8 +779,15 @@ function App() {
                             return (
                                 <div key={car.name}
                                     onClick={() => { setSelectedCar(car); setPage("car-detail"); }}
-                                    className={`${panel} card-pop reveal cursor-pointer hover:shadow-[0_24px_64px_rgba(15,23,42,0.14)] hover:-translate-y-1 transition-transform`}
+                                    className={`${panel} card-pop reveal cursor-pointer hover:shadow-[0_24px_64px_rgba(15,23,42,0.14)] hover:-translate-y-1 transition-transform overflow-hidden`}
                                     style={{ animationDelay: `${80 + i * 90}ms` }}>
+                                    <div className="-mx-6 -mt-6 mb-4 overflow-hidden rounded-t-3xl">
+                                        <img
+                                            src={getCarImage(car)}
+                                            alt={car.name}
+                                            className="h-36 w-full object-cover transition-transform duration-500 hover:scale-105"
+                                        />
+                                    </div>
                                     <div className="flex items-center justify-between gap-2">
                                         <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{car.brand}</div>
                                         <div className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${brandFit ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
@@ -918,19 +1025,97 @@ function App() {
                     { label: "Service & Maint.",  monthly: monthlySvc,  annual: annualSvc,          color: "bg-emerald-50",note: "Est. 2×/year" },
                 ];
 
+                // ── Life Impact Simulator calculations ─────────────────────
+                const li_salary      = Number(form.monthlySalary      || 0);
+                const li_expenses    = Number(form.monthlyExpenses    || 0);
+                const li_commitments = Number(form.monthlyCommitments || 0);
+
+                // Scenario A: buy THIS car — monthly savings left over
+                const li_freeCash_A   = Math.max(li_salary - li_expenses - li_commitments - totalMonthly, 0);
+                const li_savings_A    = Math.round(li_freeCash_A * 60);
+
+                // Scenario B: buy a car that is RM15,000 cheaper (same dp%, rate, tenure)
+                const li_cheaperPrice = Math.max(carPrice - 15000, 5000);
+                const li_cheaperDown  = Math.round(li_cheaperPrice * (dp / 100));
+                const li_cheaperFin   = Math.max(li_cheaperPrice - li_cheaperDown, 0);
+                const li_cheaperEmi   = Math.round(
+                    (li_cheaperFin * (1 + (rate / 100) * years)) / Math.max(years * 12, 1)
+                );
+                const li_cheaperIns   = Math.round(calcAnnualInsurance(li_cheaperPrice) / 12);
+                // Fuel, road tax, service assumed similar for a comparable car
+                const li_totalB       = li_cheaperEmi + monthlyFuel + li_cheaperIns + monthlyRT + monthlySvc;
+                const li_freeCash_B   = Math.max(li_salary - li_expenses - li_commitments - li_totalB, 0);
+                const li_savings_B    = Math.round(li_freeCash_B * 60);
+                const li_monthlyDiff  = Math.max(li_freeCash_B - li_freeCash_A, 0);
+
+                // Scenario C: invest scenario-B free cash at 7% p.a. (ASB / unit trust) for 60 months
+                const li_mr           = 0.07 / 12; // monthly rate
+                const li_savings_C    = li_freeCash_B > 0
+                    ? Math.round(li_freeCash_B * ((Math.pow(1 + li_mr, 60) - 1) / li_mr))
+                    : 0;
+
+                const li_max          = Math.max(li_savings_A, li_savings_B, li_savings_C, 1);
+                const li_pct_B        = li_savings_A > 0
+                    ? `+${Math.round(((li_savings_B - li_savings_A) / li_savings_A) * 100)}% vs this car`
+                    : li_savings_B > 0 ? "More savings" : "Similar";
+                const li_pct_C        = li_savings_A > 0
+                    ? `+${Math.round(((li_savings_C - li_savings_A) / li_savings_A) * 100)}% vs this car`
+                    : li_savings_C > 0 ? "Best outcome" : "Similar";
+
+                const li_expA = [
+                    `You spend a lot on this car (high monthly payment + insurance + maintenance).`,
+                    `Because of that, you can save very little each month.`,
+                    ``,
+                    `Monthly saving: ${formatRM(li_freeCash_A)}`,
+                    `5 years = 60 months → ${formatRM(li_freeCash_A)} × 60 = ${formatRM(li_savings_A)}`,
+                    `Result: Your total savings after 5 years = ${formatRM(li_savings_A)}`,
+                ].join("\n");
+
+                const li_expB = [
+                    `You spend less on the car (lower monthly payment of ${formatRM(li_cheaperEmi)}/mo),`,
+                    `allowing you to save more each month.`,
+                    ``,
+                    `Monthly saving: ${formatRM(li_freeCash_B)}`,
+                    `5 years → ${formatRM(li_freeCash_B)} × 60 = ${formatRM(li_savings_B)}`,
+                    `Result: Your total savings after 5 years = ${formatRM(li_savings_B)}`,
+                ].join("\n");
+
+                const li_expC = [
+                    `The extra money you saved from buying a cheaper car`,
+                    `is invested instead of spent.`,
+                    ``,
+                    `Extra money: ${formatRM(li_freeCash_B)}/month`,
+                    `Invested at 7% p.a. growth → total = ${formatRM(li_savings_C)}`,
+                    `Result: Your total wealth after 5 years = ${formatRM(li_savings_C)}`,
+                ].join("\n");
+                // ───────────────────────────────────────────────────────────
+
                 return (
                     <div className="space-y-6">
                         {/* Header */}
-                        <div className={`${panel} card-pop reveal s1`}>
-                            <button onClick={() => setPage("analysis")}
-                                className="btn-animated mb-4 inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm text-slate-600">
-                                ← Back to Analysis
-                            </button>
-                            <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className={`${panel} card-pop reveal s1 overflow-hidden p-0`}>
+                            {/* Hero image */}
+                            <div className="relative h-56 w-full overflow-hidden rounded-t-3xl md:h-72">
+                                <img
+                                    src={getCarImage(car)}
+                                    alt={car.name}
+                                    className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                <button onClick={() => setPage("analysis")}
+                                        className="btn-animated absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/20 px-4 py-2 text-sm font-medium text-white backdrop-blur-md">
+                                    ← Back to Analysis
+                                </button>
+                                <div className="absolute bottom-5 left-6 right-6">
+                                    <div className="text-xs font-semibold uppercase tracking-widest text-white/70">{car.brand} · {car.type}</div>
+                                    <h1 className="mt-1 text-3xl font-black text-white md:text-4xl">{car.name}</h1>
+                                </div>
+                            </div>
+                            {/* Price + Monthly */}
+                            <div className="flex flex-wrap items-center justify-between gap-4 p-6">
                                 <div>
-                                    <div className="text-xs font-semibold uppercase tracking-widest text-slate-400">{car.brand} · {car.type}</div>
-                                    <h1 className="mt-1 text-4xl font-black md:text-5xl">{car.name}</h1>
-                                    <div className="mt-2 text-3xl font-bold text-slate-700">{formatRM(carPrice)}</div>
+                                    <div className="text-sm text-slate-500">Retail price</div>
+                                    <div className="mt-1 text-3xl font-bold text-slate-900">{formatRM(carPrice)}</div>
                                 </div>
                                 <div className="rounded-2xl bg-slate-900 px-6 py-4 text-white">
                                     <div className="text-xs uppercase tracking-widest text-slate-300">Total Monthly Cost</div>
@@ -1046,6 +1231,79 @@ function App() {
                             </p>
                         </div>
 
+                        {/* Life Impact Simulator */}
+                        <div className={`${panel} card-pop reveal s5`}>
+                            <div className="flex items-center gap-3">
+                                <span className="inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-600">
+                                    <TrendingUp className="h-5 w-5" />
+                                </span>
+                                <div>
+                                    <div className="text-2xl font-extrabold text-slate-900">Life Impact Simulator</div>
+                                    <div className="text-sm text-slate-500">5-year savings projection based on your choice today</div>
+                                </div>
+                            </div>
+
+                            <p className="mt-5 text-sm text-slate-600 leading-relaxed">
+                                Your car decision today shapes your financial future. Compare three paths and see how much you could save over the next 5 years.
+                            </p>
+
+                            {/* Visual proportion bars */}
+                            <div className="mt-5 space-y-3 rounded-2xl bg-slate-50 p-4 border border-slate-200">
+                                <div className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">5-Year Savings Comparison</div>
+                                {[
+                                    { label: "Buy this car",          amount: li_savings_A, bar: "bg-rose-400"    },
+                                    { label: "RM15k cheaper car",     amount: li_savings_B, bar: "bg-amber-400"   },
+                                    { label: "Invest free cash (7%)", amount: li_savings_C, bar: "bg-emerald-400" },
+                                ].map(({ label, amount, bar }) => (
+                                    <div key={label} className="space-y-1">
+                                        <div className="flex items-center justify-between text-xs text-slate-600">
+                                            <span>{label}</span>
+                                            <span className="font-semibold">{formatRM(amount)}</span>
+                                        </div>
+                                        <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+                                            <div
+                                                className={`h-full rounded-full bar-animate ${bar}`}
+                                                style={{ width: `${(amount / li_max) * 100}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="mt-6 grid gap-4 md:grid-cols-3">
+                                <ScenarioCard
+                                    title="🚗 Buy this car"
+                                    amount={li_savings_A}
+                                    changeText={li_savings_A > 0 ? `${formatRM(li_freeCash_A)}/mo free cash` : "No savings margin"}
+                                    color="red"
+                                    explanation={li_expA}
+                                />
+                                <ScenarioCard
+                                    title="🚙 RM15k Cheaper Car"
+                                    amount={li_savings_B}
+                                    changeText={li_pct_B}
+                                    color="amber"
+                                    recommended
+                                    explanation={li_expB}
+                                />
+                                <ScenarioCard
+                                    title="💰 Invest Free Cash (7%)"
+                                    amount={li_savings_C}
+                                    changeText={li_pct_C}
+                                    color="emerald"
+                                    explanation={li_expC}
+                                />
+                            </div>
+
+                            <p className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 leading-relaxed">
+                                Figures based on your profile: {formatRM(li_salary)}/mo salary, {formatRM(li_expenses + li_commitments)}/mo outgoings.
+                                Cheaper car scenario uses same {dp}% down, {rate}% rate, {years}-year tenure. Investment return assumes 7% p.a.
+                                <strong className="text-slate-900"> Your choices today shape your financial future.</strong>
+                            </p>
+                        </div>
+
+
+                        {/* Action Buttons */}
                         <section className="flex flex-wrap gap-3">
                             <button onClick={() => setPage("analysis")} className="btn-animated rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white">Back to Analysis</button>
                             <button onClick={() => setPage("dealerships")} className="btn-animated rounded-full border border-slate-300 bg-white px-6 py-3 text-sm">Find Dealerships</button>
@@ -1054,8 +1312,101 @@ function App() {
                 );
             })()}
 
+            {/* ── DANGER MODAL ──────────────────────────────── */}
+            {showDangerModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                     onClick={() => setShowDangerModal(false)}>
+                    {/* Backdrop */}
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+
+                    {/* Card */}
+                    <div className="reveal-scale relative w-full max-w-sm rounded-3xl border border-white/70 bg-white/95 p-7 shadow-[0_32px_80px_rgba(15,23,42,0.22)] backdrop-blur-xl"
+                         onClick={(e) => e.stopPropagation()}>
+
+                        {/* Icon */}
+                        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 border border-rose-100">
+                            <AlertTriangle className="h-7 w-7 text-rose-500" />
+                        </div>
+
+                        {/* Heading */}
+                        <h2 className="text-center text-xl font-black text-slate-900">Financial Risk Detected</h2>
+                        <p className="mt-2 text-center text-sm text-slate-500 leading-relaxed">
+                            This car price exceeds <span className="font-semibold text-slate-700">20× your monthly salary</span>. Taking on this loan may put serious strain on your finances.
+                        </p>
+
+                        {/* Divider */}
+                        <div className="my-5 h-px bg-slate-100" />
+
+                        {/* Tips */}
+                        <ul className="space-y-2.5 text-sm text-slate-600">
+                            {[
+                                "Consider a car within your safe budget range.",
+                                "A lower loan reduces monthly stress significantly.",
+                                "You can still proceed — but plan carefully.",
+                            ].map((tip) => (
+                                <li key={tip} className="flex items-start gap-2.5">
+                                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-600 text-[10px] font-bold">!</span>
+                                    {tip}
+                                </li>
+                            ))}
+                        </ul>
+
+                        {/* Actions */}
+                        <div className="mt-6 flex flex-col gap-2.5">
+                            <button
+                                onClick={() => { setShowDangerModal(false); setPage("analysis"); }}
+                                className="btn-animated w-full rounded-full bg-rose-500 py-3 text-sm font-semibold text-white">
+                                Proceed Anyway
+                            </button>
+                            <button
+                                onClick={() => setShowDangerModal(false)}
+                                className="btn-animated w-full rounded-full border border-slate-200 bg-white py-3 text-sm text-slate-700">
+                                Go Back & Adjust
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </Shell>
     );
 }
+{/* ScenarioCard Component */}
+function ScenarioCard({ title, amount, changeText, color, explanation, recommended }) {
+    const [show, setShow] = React.useState(false);
+    const c = SCENARIO_COLORS[color] || SCENARIO_COLORS.emerald;
 
+    return (
+        <div
+            onClick={() => setShow(!show)}
+            className={`card-pop reveal rounded-3xl border ${c.border} bg-gradient-to-b ${c.bg} px-5 py-6 cursor-pointer`}
+        >
+            <div className={`text-sm font-semibold text-center ${c.text}`}>{title}</div>
+            <div className={`mt-3 text-3xl font-extrabold text-center ${c.text}`}>{formatRM(amount)}</div>
+            <div className={`mt-1 text-[11px] font-bold text-center uppercase tracking-widest ${c.sub} opacity-70`}>saved</div>
+            <div className={`mt-1 text-xs font-medium text-center ${c.sub}`}>{changeText}</div>
+
+            {recommended && (
+                <div className="mt-3 flex justify-center">
+                    <div className="inline-flex items-center gap-1 rounded-full bg-amber-200/80 px-3 py-1 text-xs font-semibold text-amber-800">
+                        <CheckCircle2 className="h-3 w-3" /> Recommended
+                    </div>
+                </div>
+            )}
+
+            <div className={`mt-4 flex items-center justify-center gap-1.5 ${c.sub}`}>
+                <span className="text-[11px] font-semibold">{show ? "Hide breakdown" : "See breakdown"}</span>
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${show ? "rotate-180" : ""}`} />
+            </div>
+
+            <div className={`expand-panel${show ? " open" : ""} mt-2`}>
+                <div>
+                    <div className={`rounded-2xl border ${c.expand} p-3 text-left text-sm whitespace-pre-line leading-relaxed`}>
+                        {explanation}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
 export default App;
