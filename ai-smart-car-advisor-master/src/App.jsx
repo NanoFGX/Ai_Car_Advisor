@@ -278,11 +278,11 @@ function calculateAnalysis(form) {
     const targetCar   = Number(form.desiredCarPrice    || 0);
 
     const disposableIncome           = Math.max(salary - expenses - commitments, 0);
-    const conservativeMonthlyCarCost = Math.max(Math.round(disposableIncome * 0.45), 0);
-    const stretchMonthlyCarCost      = Math.max(Math.round(disposableIncome * 0.65), 0);
+    const conservativeMonthlyCarCost = Math.max(Math.round(disposableIncome * 0.2), 0);
+    const stretchMonthlyCarCost      = Math.max(Math.round(disposableIncome * 0.5), 0);
 
-    const lowBudget        = Math.max(Math.round(conservativeMonthlyCarCost * 72), 12000);
-    const highBudget       = Math.max(Math.round(stretchMonthlyCarCost * 84), lowBudget + 8000);
+    const lowBudget        = Math.max(Math.round(conservativeMonthlyCarCost * 60), 12000);
+    const highBudget       = Math.max(Math.round(stretchMonthlyCarCost * 60), lowBudget + 8000);
     const safeCarBudgetLow  = Math.round(lowBudget  / 1000) * 1000;
     const safeCarBudgetHigh = Math.round(highBudget / 1000) * 1000;
 
@@ -294,29 +294,38 @@ function calculateAnalysis(form) {
     const financialHealthScore = Math.max(18, Math.min(92, Math.round(score)));
 
     const scenarioAPrice = targetCar || Math.max(safeCarBudgetHigh + 30000, 80000);
-    const scenarioBPrice = Math.min(Math.max(safeCarBudgetLow, 30000), safeCarBudgetHigh);
+    const scenarioBPrice = Math.min(Math.max(safeCarBudgetLow, 30000), 100000);
 
     const recommendedCars = (() => {
-        const brandAndBudget = CAR_CATALOG.filter((car) => {
-            const brandMatch = form.preferredBrand === "Any" || car.brand === form.preferredBrand;
-            return brandMatch && car.price >= safeCarBudgetLow * 0.75 && car.price <= safeCarBudgetHigh * 1.2;
-        });
+        // Step 1: Preferred brand AND strictly within desired price, sorted by price descending
+        const brandAndBudget = CAR_CATALOG
+            .filter((car) => (form.preferredBrand === "Any" || car.brand === form.preferredBrand) && car.price <= form.desiredCarPrice*1.20)
+            .sort((a, b) => b.price - a.price); // most expensive first
+
         if (brandAndBudget.length) return brandAndBudget.slice(0, 3);
 
-        // Brand matches but none fit the budget — show the brand's cars sorted by price proximity
-        const brandOnly = CAR_CATALOG.filter((car) =>
-            form.preferredBrand === "Any" || car.brand === form.preferredBrand
-        ).sort((a, b) => Math.abs(a.price - safeCarBudgetHigh) - Math.abs(b.price - safeCarBudgetHigh));
+        // Step 2: Brand match only, sorted by price descending closest to desired price
+        const brandOnly = CAR_CATALOG
+            .filter((car) => form.preferredBrand === "Any" || car.brand === form.preferredBrand)
+            .filter(car => car.price <= form.desiredCarPrice) // optional: still keep within desired price
+            .sort((a, b) => b.price - a.price);
+
         if (brandOnly.length) return brandOnly.slice(0, 3);
 
-        // Last resort — any brand within budget
-        return CAR_CATALOG.filter((car) => car.price <= safeCarBudgetHigh).slice(0, 3);
+        // Step 3: Any car within desired price, sorted by most expensive first
+        return CAR_CATALOG
+            .filter((car) => car.price <= form.desiredCarPrice)
+            .sort((a, b) => b.price - a.price)
+            .slice(0, 3);
     })();
 
     const fallbackCars = recommendedCars;
     const recommendedDealers = DEALERS.filter((dealer) =>
         form.preferredBrand === "Any" ? true : dealer.brand === form.preferredBrand || dealer.brand === "Used Car"
+
     );
+    const monthlyA = Math.round(scenarioAPrice / 72 + scenarioAPrice * 0.0068 + 190);
+    const monthlyB = Math.round(scenarioBPrice / 84 + scenarioBPrice * 0.0055 + 160);
 
     return {
         disposableIncome,
@@ -327,8 +336,26 @@ function calculateAnalysis(form) {
         safeCarBudgetHigh,
         recommendedMonthlyLow:  Math.round(conservativeMonthlyCarCost / 10) * 10,
         recommendedMonthlyHigh: Math.round(stretchMonthlyCarCost      / 10) * 10,
-        scenarioA: { label: `Scenario A (${formatRM(scenarioAPrice)})`, monthly: Math.round(scenarioAPrice / 72 + scenarioAPrice * 0.0068 + 190), stress: scenarioAPrice > safeCarBudgetHigh ? "HIGH" : "MEDIUM" },
-        scenarioB: { label: `Scenario B (${formatRM(scenarioBPrice)})`, monthly: Math.round(scenarioBPrice / 84 + scenarioBPrice * 0.0055 + 160), stress: scenarioBPrice <= safeCarBudgetHigh ? "LOW" : "MEDIUM" },
+        scenarioA: {
+            label: `Scenario A (${formatRM(scenarioAPrice)})`,
+            monthly: monthlyA,
+            stress:
+                scenarioAPrice <= safeCarBudgetLow
+                    ? "LOW"
+                    : scenarioAPrice <= safeCarBudgetHigh*0.8
+                        ? "MEDIUM"
+                        : "HIGH",
+        },
+        scenarioB: {
+            label: `Scenario B (${formatRM(scenarioBPrice)})`,
+            monthly: monthlyB,
+            stress:
+                scenarioBPrice <= safeCarBudgetLow
+                    ? "LOW"
+                    : scenarioBPrice <= safeCarBudgetHigh*0.8
+                        ? "MEDIUM"
+                        : "HIGH",
+        },
         recommendedCars:    recommendedCars.length    ? recommendedCars    : fallbackCars,
         recommendedDealers: recommendedDealers.length ? recommendedDealers : DEALERS,
         recommendationText: financialHealthScore >= 70
@@ -407,6 +434,7 @@ function App() {
     const [dp,   setDp]           = useState(0);
     const [years, setYears]       = useState(7);
     const [rate,  setRate]        = useState(0);
+
     const [selectedCar, setSelectedCar] = useState(null);
     const [showDangerModal, setShowDangerModal] = useState(false);
     const analysis = useMemo(() => calculateAnalysis(form), [form]);
@@ -425,7 +453,7 @@ function App() {
     const financed   = Math.max(Math.round(basePrice * (1 - dp / 100)), 0);
     const emi        = Math.round((financed * (1 + (rate / 100) * years)) / Math.max(years * 12, 1));
     const running    = Math.round(basePrice * 0.0018 + 220);
-    const monthlyOwn = emi + running;
+    const monthlyOwn = emi + running ;
 
     return (
         <Shell page={page} setPage={setPage} onReset={reset}>
@@ -756,7 +784,7 @@ function App() {
                                     <div className="mb-2 flex justify-between text-sm text-slate-600">
                                         <span>Interest rate</span><span>{rate.toFixed(1)}%</span>
                                     </div>
-                                    <input type="range" min="0" max="6" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-slate-900" />
+                                    <input type="range" min="0" max="10" step="0.1" value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-slate-900" />
                                 </label>
                                 <label>
                                     <div className="mb-2 text-sm text-slate-600">Loan tenure</div>
@@ -771,6 +799,179 @@ function App() {
                                 <div className="mt-2 text-sm text-slate-300">Installment {formatRM(emi)} + running {formatRM(running)}</div>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6 items-stretch">
+
+                        {/* ================= DTI PANEL ================= */}
+                        <div className={`${panel} card-pop reveal s6`}>
+                            <div className="text-xl font-bold text-slate-900 mb-4">
+                                💡 Debt-to-Income (DTI) Intelligence
+                            </div>
+
+                            {(() => {
+                                const monthlyCommitments = parseFloat(form.monthlyCommitments) || 0;
+                                const carInstallment = parseFloat(monthlyOwn) || 0;
+                                const monthlySalary = parseFloat(form.monthlySalary) || 1;
+
+                                const dti = ((monthlyCommitments + carInstallment) / monthlySalary) * 100;
+
+                                let riskColor = "text-emerald-600";
+                                let riskText = "Very Low Risk";
+                                let advice =
+                                    "Your debt obligations are minimal relative to your income. You have excellent capacity for savings, investments, and unexpected expenses.";
+
+// 20–30%: Low Risk
+                                if (dti >= 20 && dti < 30) {
+                                    riskColor = "text-emerald-500";
+                                    riskText = "Low Risk";
+                                    advice =
+                                        "Your debt is well-managed and unlikely to affect your monthly cash flow. You can comfortably consider small additional commitments if needed.";
+                                }
+// 30–40%: Moderate Risk
+                                else if (dti >= 30 && dti < 40) {
+                                    riskColor = "text-amber-600";
+                                    riskText = "Moderate Risk";
+                                    advice =
+                                        "Your financial commitments are beginning to consume a noticeable portion of your income. While still manageable, taking on additional debt could start limiting your ability to save or respond to emergencies.";
+                                }
+// 40–50%: High Risk
+                                else if (dti >= 40 && dti < 50) {
+                                    riskColor = "text-orange-600";
+                                    riskText = "High Risk";
+                                    advice =
+                                        "A significant portion of your income is already dedicated to debt repayments. Adding another large commitment may strain your budget and reduce flexibility in emergencies.";
+                                }
+// 50–60%: Very High Risk
+                                else if (dti >= 50 && dti < 60) {
+                                    riskColor = "text-red-600";
+                                    riskText = "Very High Risk";
+                                    advice =
+                                        "More than half of your income is tied to debt obligations. Taking on new loans now could severely impact your financial stability and create stress in monthly cash flow.";
+                                }
+// 60%+: Critical Risk
+                                else if (dti >= 60) {
+                                    riskColor = "text-rose-600";
+                                    riskText = "Critical Risk";
+                                    advice =
+                                        "At this level, your income is largely consumed by debt. Additional loans or commitments could lead to serious financial strain and long-term risk.";
+                                }
+
+                                return (
+                                    <>
+                                        <div className="mb-2 text-sm text-slate-700">
+                                            <strong>Debt-to-Income (DTI) Concept:</strong><br />
+                                            Keep your DTI low so you have enough monthly income left for daily expenses, savings and unexpected costs. Maintaining a low DTI also gives you more flexibility to handle new financial opportunities without stress.                                            <br /><br />
+                                            Monthly salary: <strong>RM{monthlySalary.toLocaleString()}</strong><br />
+                                            Monthly commitments: <strong>RM{monthlyCommitments.toLocaleString()}</strong><br />
+                                            Car installment: <strong>RM{monthlyOwn.toLocaleString()}</strong><br />
+                                        </div>
+
+                                        <div className="mb-3 text-sm text-slate-700">
+                                            <strong>Your DTI :</strong>{" "}
+                                            <span className={`font-bold ${riskColor}`}>
+        {dti.toFixed(0)}%
+    </span>{" "}
+                                             <span className={`font-semibold ${riskColor}`}>{" - " +riskText}</span>
+                                        </div>
+
+                                        <div className="mb-3 text-sm text-slate-700">
+                                            Intelligent insight 💡 : <em>{advice}</em>
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </div>
+
+
+                        {/* ================= EMERGENCY FUND PANEL ================= */}
+                        <div className={`${panel} card-pop reveal s7`}>
+                            <div className="text-xl font-bold text-slate-900 mb-4">
+                                🛟 Emergency Fund Intelligence
+                            </div>
+
+                            {(() => {
+                                const monthlyExpenses = parseFloat(form.monthlyExpenses) || 0;
+                                const monthlyCommitment = parseFloat(form.monthlyCommitments) || 0;
+                                const currentSavings = parseFloat(form.currentSavings) || 0;
+
+                                const recommendedFund = (monthlyExpenses + monthlyCommitment) * 6;
+                                const gap = recommendedFund - currentSavings;
+
+                                let status = "";
+                                let insight = "";
+                                let color = "text-emerald-600";
+
+                                if (currentSavings >= recommendedFund) {
+                                    status = "Excellent Protection";
+                                    color = "text-emerald-600";
+
+                                    insight =
+                                        "Your emergency savings already meet the recommended six-month safety buffer. This means unexpected situations such as job loss, medical bills, or urgent repairs can be handled without relying on debt.";
+                                }
+                                else if (currentSavings >= recommendedFund * 0.75) {
+                                    status = "Nearly Prepared";
+                                    color = "text-lime-600";
+
+                                    insight =
+                                        "Your emergency fund is close to the recommended level. With slightly more saving, you will have a strong financial cushion before committing to large financial obligations.";
+                                }
+                                else if (currentSavings >= recommendedFund * 0.5) {
+                                    status = "Moderate Protection";
+                                    color = "text-amber-600";
+
+                                    insight =
+                                        "You have started building an emergency fund, but it is still below the recommended safety level. Purchasing a car now could slow your progress toward financial stability.";
+                                }
+                                else if (currentSavings >= recommendedFund * 0.25) {
+                                    status = "Low Protection";
+                                    color = "text-orange-600";
+
+                                    insight =
+                                        "Your emergency savings are limited. Unexpected expenses may create financial pressure, and taking on a new loan could reduce your financial flexibility.";
+                                }
+                                else {
+                                    status = "Critical Risk";
+                                    color = "text-rose-600";
+
+                                    insight =
+                                        "Your emergency fund is critically low. Without sufficient savings, unexpected events such as job loss or medical emergencies could lead to serious financial strain. It is strongly recommended to build your emergency fund before committing to major purchases.";
+                                }
+
+                                return (
+                                    <>
+                                        <div className="text-sm text-slate-700 mb-3">
+                                            <strong>Emergency Fund Concept:</strong>
+                                            <br />
+                                            Keep at least <strong>6 months of living expenses</strong> as an emergency fund to protect against unexpected events like job loss or medical emergencies.
+                                        </div>
+
+                                        <div className="text-sm text-slate-700 mb-2">
+                                            Monthly expenses: <strong>RM{monthlyExpenses.toLocaleString()}</strong> <br/>
+                                            Monthly commitments: <strong>RM{monthlyCommitment.toLocaleString()}</strong> <br/>
+                                            Recommended emergency fund: <strong>RM{recommendedFund.toLocaleString()}</strong> <br/>
+                                            Your savings: <strong>RM{currentSavings.toLocaleString()}</strong>
+                                        </div>
+
+                                        {currentSavings < recommendedFund && (
+                                            <div className="text-sm text-slate-700 mb-4">
+                                                Remaining gap: <strong>RM{gap.toLocaleString()}</strong>
+                                            </div>
+                                        )}
+
+                                        <div className="text-sm text-slate-800 mb-1">
+                                            <strong>Your emergency readiness :</strong>
+                                            <strong className={`ml-1 ${color}`}> {status}</strong>
+                                        </div>
+
+                                        <div className="text-sm text-slate-700">
+                                            Intelligent insight 💡 : {insight}
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </div>
+
                     </div>
 
                     <section className="grid gap-4 md:grid-cols-3">
@@ -1118,10 +1319,13 @@ function App() {
                                     <div className="mt-1 text-3xl font-bold text-slate-900">{formatRM(carPrice)}</div>
                                 </div>
                                 <div className="rounded-2xl bg-slate-900 px-6 py-4 text-white">
-                                    <div className="text-xs uppercase tracking-widest text-slate-300">Total Monthly Cost</div>
-                                    <div className="mt-1 text-4xl font-black">{formatRM(totalMonthly)}</div>
-                                    <div className="mt-1 text-xs text-slate-400">All-in ownership estimate</div>
+                                    <div className="text-xs uppercase tracking-widest text-slate-300">Payment per month</div>
+                                    <div className="mt-1 text-4xl font-black">{formatRM(monthlyEmi)}</div>
+                                    <div className="mt-1 text-s text-slate-400">
+                                        This is <strong>{((monthlyEmi / analysis.disposableIncome) * 100).toFixed(1)}%</strong> of your monthly income
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -1159,9 +1363,16 @@ function App() {
                                             </div>
                                         </div>
                                     ))}
-                                    <div className="flex items-center justify-between rounded-2xl bg-slate-900 px-4 py-3 text-white">
-                                        <div className="font-bold">Total / Month</div>
-                                        <div className="text-xl font-black">{formatRM(totalMonthly)}</div>
+                                    {/* Total */}
+                                    <div className="flex flex-col rounded-2xl bg-slate-900 px-4 py-3 text-white">
+                                        <div className="flex justify-between items-center">
+                                            <div className="font-bold">Total / Month</div>
+                                            <div className="text-xl font-black">{formatRM(totalMonthly)}</div>
+                                        </div>
+                                        {/* Percentage of salary */}
+                                        <div className="mt-1 text-xs text-slate-300">
+                                            This is <strong>{((totalMonthly / analysis.disposableIncome) * 100).toFixed(1)}%</strong> of your monthly income
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1188,6 +1399,207 @@ function App() {
                                 </div>
                             </div>
                         </section>
+
+                        <div className={`${panel} card-pop reveal s8`}>
+                            <div className="text-xl font-bold text-slate-900 mb-4">💡 Lifestyle Impact Meter</div>
+
+                            {(() => {
+                                // Parse inputs safely
+                                const salary = parseFloat(form.monthlySalary) || 1;
+                                const expenses = parseFloat(form.monthlyExpenses) || 0;
+                                const commitments = parseFloat(form.monthlyCommitments) || 0;
+                                const carInstallment = parseFloat(totalMonthly) || 0;
+
+                                // Calculate leftover after all outflows
+                                const leftover = salary - (expenses + commitments + carInstallment);
+                                const leftoverPct = (leftover / salary) * 100;
+
+                                // Determine lifestyle label and AI-style advice
+                                let label = "";
+                                let colorClass = "text-emerald-600";
+                                let advice = "";
+
+                                const leftoverPctt = leftover / salary;
+
+                                if (leftoverPctt >= 0.35) {
+                                    label = "Very Comfortable";
+                                    colorClass = "text-emerald-600";
+                                    advice = "You have a strong financial buffer. Your income comfortably covers all expenses and debts, allowing you to save, invest, or enjoy lifestyle choices without stress.";
+                                } else if (leftoverPctt >= 0.25) {
+                                    label = "Comfortable";
+                                    colorClass = "text-lime-500";
+                                    advice = "Your leftover cash is healthy. You can manage unexpected costs and still have room for savings or discretionary spending, though careful planning is always good.";
+                                } else if (leftoverPctt >= 0.15) {
+                                    label = "Tight";
+                                    colorClass = "text-amber-600";
+                                    advice = "Your leftover cash is limited. Avoid taking new debts or unnecessary expenses, and try to boost savings to maintain financial stability.";
+                                } else {
+                                    label = "Financial Stress";
+                                    colorClass = "text-rose-600";
+                                    advice = "Your leftover is critically low. Any unexpected expense or additional debt could strain your budget. Immediate attention is required to reduce commitments and build a buffer.";
+                                }
+
+                                // Bar visual for leftover
+                                const barWidth = Math.max(0, Math.min(leftoverPct, 100)); // 0-100%
+                                const barColor =
+                                    leftover > 1500 ? "bg-emerald-400" : leftover > 700 ? "bg-amber-400" : "bg-rose-400";
+
+                                return (
+                                    <>
+                                        <div className="mb-2 text-sm text-slate-700">
+                                            This meter helps you understand how your current expenses, commitments, and car payments
+                                            affect your monthly financial comfort.
+                                        </div>
+
+                                        {/* Visual bar */}
+                                        <div className="mt-2 w-full h-3 rounded-full bg-slate-200">
+                                            <div
+                                                className={`h-full rounded-full ${barColor} bar-animate`}
+                                                style={{ width: `${barWidth}%` }}
+                                            />
+                                        </div>
+
+                                        <div className={`mt-2 text-sm font-semibold ${colorClass}`}>
+                                            Lifestyle : {label}
+                                        </div>
+
+                                        <div className="mt-2 text-s text-slate-800">
+                                            Intelligent Insight 💡 :  {advice}
+                                        </div><br />
+                                        <div className="mt-2 text-xs text-slate-600">
+                                            Breakdown:<br />
+                                            Remaining = Salary − ( Expenses + Commitments + Car Installment )<br />
+                                            = RM{salary.toLocaleString()} − ( RM{expenses.toLocaleString()} + RM{commitments.toLocaleString()} + RM{carInstallment.toLocaleString()} )<br />
+                                            Remaining : RM{leftover.toLocaleString()} ({leftoverPct.toFixed(0)}% of your salary)
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </div>
+
+                        <div className={`${panel} card-pop reveal s9`}>
+                            <div className="text-xl font-bold text-slate-900 mb-4">🛡️ Financial Safety Score
+                            </div>
+                            <div className="text-sm text-slate-700 mb-2">
+                                This score evaluates your financial safety based on debt, savings, leftover cash, and loan tenure.
+                            </div>
+                            {(() => {
+                                // --- Parse Inputs ---
+                                const monthlySalary = parseFloat(form.monthlySalary) || 1;
+                                const monthlyExpenses = parseFloat(form.monthlyExpenses) || 0;
+                                const monthlyCommitments = parseFloat(form.monthlyCommitments) || 0;
+                                const carInstallment = parseFloat(monthlyOwn) || 0;
+                                const currentSavings = parseFloat(form.currentSavings) || 0;
+                                const loanTenureYears = parseFloat(form.loanTenure) || 5;
+
+                                // --- Key Metrics ---
+                                const leftover = monthlySalary - (monthlyExpenses + monthlyCommitments + carInstallment);
+                                const leftoverPct = Math.max((leftover / monthlySalary) * 100, 0);
+                                const recommendedFund = (monthlyExpenses + monthlyCommitments) * 6;
+                                const savingsPct = Math.min((currentSavings / recommendedFund) * 100, 100);
+                                const dti = ((monthlyCommitments + carInstallment) / monthlySalary) * 100;
+
+                                // --- Score Metrics ---
+                                let dtiScore = 100;
+                                if (dti >= 30 && dti < 40) dtiScore = 80;
+                                else if (dti >= 40 && dti < 50) dtiScore = 50;
+                                else if (dti >= 50) dtiScore = 20;
+
+                                const leftoverScore = Math.min(Math.max(leftoverPct, 0), 100);
+                                const tenureScore = loanTenureYears <= 3 ? 100 : loanTenureYears <= 5 ? 80 : 60;
+
+                                const financialScore = Math.round(
+                                    dtiScore * 0.3 + savingsPct * 0.3 + leftoverScore * 0.3 + tenureScore * 0.1
+                                );
+
+                                // --- Status ---
+                                let status = "";
+                                let statusColor = "text-emerald-600";
+                                let advice = "";
+
+                                if (financialScore >= 80) {
+                                    status = "Safe Purchase";
+                                    advice = "Your finances are in excellent shape. You can comfortably afford this car while still maintaining strong savings, emergency funds, and flexibility for unexpected expenses.";
+                                    statusColor = "text-emerald-600"; // Green
+                                } else if (financialScore >= 60) {
+                                    status = "Moderate Risk";
+                                    advice = "Your finances are decent, but some areas like savings, leftover cash, or DTI could be improved. You can afford this car, but monitor your budget and avoid taking on additional debt.";
+                                    statusColor = "text-amber-600"; // Amber
+                                } else if (financialScore >= 40) {
+                                    status = "High Risk";
+                                    advice = "A significant portion of your income is already committed to expenses and debt. Purchasing this car could strain your monthly cash flow, reduce your ability to save, and limit financial flexibility during emergencies.";
+                                    statusColor = "text-orange-600"; // Orange
+                                } else {
+                                    status = "Critical Risk";
+                                    advice = "Your financial situation is under severe stress. Taking on this car loan could jeopardize your stability, increase long-term debt risk, and leave you vulnerable to unexpected costs. Immediate financial review is highly recommended.";
+                                    statusColor = "text-rose-600"; // Red
+                                }
+
+                                // --- Donut Settings ---
+                                const radius = 40;
+                                const strokeWidth = 10;
+                                const circumference = 2 * Math.PI * radius;
+                                const offset = circumference * (1 - financialScore / 100);
+
+                                return (
+                                    <>
+                                        {/* Horizontal Layout */}
+                                        <div className="flex items-center mb-4">
+                                            {/* Donut */}
+                                            <div className="relative w-24 h-24 flex-shrink-0">
+                                                <svg width="100%" height="100%" viewBox="0 0 120 120">
+                                                    {/* Background Circle */}
+                                                    <circle
+                                                        cx="60"
+                                                        cy="60"
+                                                        r={radius}
+                                                        stroke="#e2e8f0"
+                                                        strokeWidth={strokeWidth}
+                                                        fill="white"
+                                                    />
+                                                    {/* Score Arc */}
+                                                    <circle
+                                                        cx="60"
+                                                        cy="60"
+                                                        r={radius}
+                                                        stroke="currentColor"
+                                                        strokeWidth={strokeWidth}
+                                                        strokeDasharray={circumference}
+                                                        strokeDashoffset={offset}
+                                                        strokeLinecap="round"
+                                                        className={`${statusColor}`}
+                                                        fill="none"
+                                                        style={{ transition: "stroke-dashoffset 0.8s ease" }}
+                                                    />
+                                                </svg>
+                                                {/* Center Number */}
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="text-lg font-bold text-slate-900">{financialScore}</div>
+                                                </div>
+                                            </div>
+
+                                            {/* Description + Status */}
+                                            <div className="ml-4 flex-1">
+
+                                                <div className={`text-m font-semibold ${statusColor}`}>Status: {status}</div>
+                                                <div className="text-m text-slate-700 mt-1">
+                                                    Intelligent Insight 💡 : <em>{advice}</em>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Breakdown */}
+                                        <div className="mt-2 text-xs text-slate-500">
+                                            📊 Breakdown: <br />
+                                            DTI Score: {dtiScore}/100 ({dti.toFixed(0)}% DTI) <br />
+                                            Savings Score: {savingsPct.toFixed(0)}/100 (Saved RM{currentSavings.toLocaleString()} / Recommended RM{recommendedFund.toLocaleString()}) <br />
+                                            Leftover Score: {leftoverScore.toFixed(0)}/100 (Remaining RM{leftover.toLocaleString()} / {leftoverPct.toFixed(0)}%) <br />
+                                            Loan Tenure Score: {tenureScore}/100 ({loanTenureYears} years)
+                                        </div>
+                                    </>
+                                );
+                            })()}
+                        </div>
 
                         {/* Loan Details */}
                         <div className={`${panel} card-pop reveal s4`}>
@@ -1283,7 +1695,6 @@ function App() {
                                     amount={li_savings_B}
                                     changeText={li_pct_B}
                                     color="amber"
-                                    recommended
                                     explanation={li_expB}
                                 />
                                 <ScenarioCard
