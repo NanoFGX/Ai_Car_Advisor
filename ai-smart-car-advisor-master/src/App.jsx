@@ -581,7 +581,7 @@ function App() {
                                 ["Current savings (RM)",         "currentSavings"    ],
                                 ["Monthly living expenses (RM)", "monthlyExpenses"   ],
                                 ["Monthly commitments (RM)",     "monthlyCommitments"],
-                                ["Desired car price (optional)", "desiredCarPrice"   ],
+                                ["Desired car price (RM)", "desiredCarPrice"   ],
                             ].map(([label, key], i) => (
                                 <label key={key} className="reveal" style={{ animationDelay: `${100 + i * 60}ms` }}>
                                     <span className="mb-2 block text-sm text-slate-600">{label}</span>
