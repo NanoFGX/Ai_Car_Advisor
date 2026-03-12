@@ -299,7 +299,7 @@ function calculateAnalysis(form) {
     const recommendedCars = (() => {
         // Step 1: Preferred brand AND strictly within desired price, sorted by price descending
         const brandAndBudget = CAR_CATALOG
-            .filter((car) => (form.preferredBrand === "Any" || car.brand === form.preferredBrand) && car.price <= form.desiredCarPrice*1.20)
+            .filter((car) => (form.preferredBrand === "Any" || car.brand === form.preferredBrand) && car.price <= form.desiredCarPrice * 1)
             .sort((a, b) => b.price - a.price); // most expensive first
 
         if (brandAndBudget.length) return brandAndBudget.slice(0, 3);
@@ -438,6 +438,10 @@ function App() {
     const [selectedCar, setSelectedCar] = useState(null);
     const [showDangerModal, setShowDangerModal] = useState(false);
     const analysis = useMemo(() => calculateAnalysis(form), [form]);
+
+    const [li_years, setLiYears] = useState(5);        // default 5 years
+    const [li_rate, setLiRate] = useState(3.5);       // default interest rate
+    const [li_cheaperDiff, setLiCheaperDiff] = useState(10000); // default cheaper car diff
 
     useEffect(() => { saveStored({ page, form }); }, [page, form]);
     useEffect(() => { window.scrollTo({ top: 0, behavior: "instant" }); }, [page, selectedCar]);
@@ -741,7 +745,7 @@ function App() {
                                         <div className="flex items-start justify-between gap-2">
                                             <div>
                                                 <div className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Scenario {i === 0 ? "A" : "B"}</div>
-                                                <div className="mt-0.5 text-xs font-medium text-slate-600">{i === 0 ? "Stretch purchase" : "Conservative"}</div>
+                                                <div className="mt-0.5 text-xs font-medium text-slate-600">{i === 0 ? "Buying a car in your desired car price" : "Buying a car in your safe car budget"}</div>
                                             </div>
                                             <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${pillStyle}`}>{s.stress}</span>
                                         </div>
@@ -759,18 +763,43 @@ function App() {
                             })}
                         </div>
 
-                        <div className="mt-6 flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4">
-                            <span className="text-sm text-slate-500">Choosing B saves you</span>
-                            <span className="text-xl font-black text-slate-900">
-                                {formatRM(Math.abs(analysis.scenarioA.monthly - analysis.scenarioB.monthly))}
-                                <span className="text-sm font-normal text-slate-400"> / month</span>
-                            </span>
+                        <div className="mt-6 flex items-center  rounded-2xl bg-slate-50 px-5 py-4">
+                            {analysis.scenarioB.monthly < analysis.scenarioA.monthly ? (
+                                <>
+                                    <span className="text-sm text-slate-500">Choosing B saves you -   </span>
+                                    <span className="text-xl font-black text-slate-900">
+         {formatRM(analysis.scenarioA.monthly - analysis.scenarioB.monthly)}
+                                        <span className="text-sm font-normal text-slate-400"> / month</span>
+      </span>
+                                </>
+                            ) : analysis.scenarioA.monthly < analysis.scenarioB.monthly ? (
+                                <>
+                                    <span className="text-sm text-slate-500">Scenario A is cheaper — smart decision</span>
+                                    <span className="text-xl font-black text-slate-900">
+        {formatRM(analysis.scenarioB.monthly - analysis.scenarioA.monthly)}
+                                        <span className="text-sm font-normal text-slate-400"> / month</span>
+      </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="text-sm text-slate-500">Both options cost the same</span>
+                                    <span className="text-xl font-black text-slate-900">
+        {formatRM(analysis.scenarioA.monthly)}
+                                        <span className="text-sm font-normal text-slate-400"> / month</span>
+      </span>
+                                </>
+                            )}
                         </div>
                     </div>
 
                     <div className={`${panel} card-pop reveal s3`}>
                         <div className="inline-flex rounded-full border border-slate-300 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                             What-If Financing Lab
+                        </div> <br/><br/>
+                        <div className="mb-2 text-sm text-slate-700">
+                            Experiment with different down payment amounts, interest rates, and loan tenures to understand how each factor impacts your monthly car ownership cost. This helps you find a financing plan that keeps your debt manageable and aligned with your financial capacity.
+                        </div> <div className="mb-2 text-sm text-slate-700">
+                            The DTI below will change dynamically based on the down payment and interest rate set.
                         </div>
                         <div className="mt-5 grid gap-5 md:grid-cols-2">
                             <div className="space-y-4 rounded-2xl bg-slate-50 p-4">
@@ -1136,28 +1165,116 @@ function App() {
             {/* ── SUMMARY ───────────────────────────────────── */}
             {page === "summary" && (
                 <div className="space-y-6">
+
+                    {/* Report Header */}
                     <div className={`${panel} card-pop reveal s1`}>
                         <h1 className="text-4xl font-black md:text-5xl">Your smartest next move</h1>
                         <p className="mt-3 max-w-3xl text-slate-600">{analysis.recommendationText}</p>
                     </div>
+
                     <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-                        <div className={`${panel} card-pop reveal s2`}>
-                            <div className="text-2xl font-bold">Recommendation snapshot</div>
-                            <div className="mt-4 rounded-2xl bg-slate-900 p-5 text-white">
-                                <div className="text-xs uppercase tracking-[0.16em] text-slate-300">Safe car budget</div>
-                                <div className="mt-1 text-3xl font-black">{formatRM(analysis.safeCarBudgetLow)} – {formatRM(analysis.safeCarBudgetHigh)}</div>
-                            </div>
-                            <div className="mt-4 grid gap-3 md:grid-cols-2">
-                                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                                    <div className="text-sm text-slate-500">Recommended monthly</div>
-                                    <div className="mt-1 text-xl font-semibold">{formatRM(analysis.recommendedMonthlyLow)} – {formatRM(analysis.recommendedMonthlyHigh)}</div>
+
+                        {/* Left Column: Recommendations & Cars */}
+                        <div className={`${panel} card-pop reveal s2 space-y-4`}>
+
+                            {/* Recommendation snapshot */}
+                            <div>
+                                <div className="text-2xl font-bold mb-2">Recommendation snapshot</div>
+                                <div className="rounded-2xl bg-slate-900 p-5 text-white">
+                                    <div className="text-xs uppercase tracking-[0.16em] text-slate-300">Safe car budget</div>
+                                    <div className="mt-1 text-3xl font-black">
+                                        {formatRM(analysis.safeCarBudgetLow)} – {formatRM(analysis.safeCarBudgetHigh)}
+                                    </div>
                                 </div>
-                                <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                                    <div className="text-sm text-slate-500">Financial score</div>
-                                    <div className="mt-1 text-xl font-semibold">{analysis.financialHealthScore}/100</div>
-                                    <ScoreRing score={analysis.financialHealthScore} />
+
+                                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                                        <div className="text-sm text-slate-500">Recommended monthly</div>
+                                        <div className="mt-1 text-xl font-semibold">
+                                            {formatRM(analysis.recommendedMonthlyLow)} – {formatRM(analysis.recommendedMonthlyHigh)}
+                                        </div>
+                                    </div>
+                                    <div className="rounded-2xl border border-slate-200 bg-white p-4 flex items-start justify-between">
+                                        <div className="flex flex-col">
+                                            <div className="text-sm text-slate-500">Financial score</div>
+                                            <div className="mt-1 text-xl font-semibold">{analysis.financialHealthScore}/100</div>
+                                        </div>
+                                        <ScoreRing score={analysis.financialHealthScore} />
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Recommended cars (side by side) */}
+                            <div>
+                                <div className="text-l font-bold mb-2">Recommended Cars</div>
+                                <div className="flex gap-1 overflow-x-auto py-2">
+                                    {analysis.recommendedCars.map((car) => {
+                                        const brandFit = form.preferredBrand === "Any" || car.brand === form.preferredBrand;
+                                        return (
+                                            <div key={car.name} className="min-w-[280px] rounded-2xl border border-slate-200 bg-white p-1 flex-shrink-0">
+                                                <div className="h-30 overflow-hidden rounded-xl">
+                                                    <img
+                                                        src={getCarImage(car)}
+                                                        alt={car.name}
+                                                        className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
+                                                    />
+                                                </div>
+                                                <div className="flex items-center justify-between mt-2">
+                                                    <div className="text-xs uppercase tracking-[0.16em] text-slate-500">{car.brand}</div>
+                                                    <div className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${brandFit ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                                                        {brandFit ? "Brand Match" : "Alt Option"}
+                                                    </div>
+                                                </div>
+                                                <div className="mt-2 text-lg font-bold">{car.name}</div>
+                                                <div className="text-sm text-slate-500">{car.type}</div>
+                                                <div className="mt-2 text-lg font-semibold text-slate-900">{formatRM(car.price)}</div>
+
+                                                {car.details && (
+                                                    <div className="mt-2 grid grid-cols-2 gap-2">
+                                                        {[
+                                                            { label: "Engine",  value: car.details.engine },
+                                                            { label: "Trans",   value: car.details.trans },
+                                                            { label: "Fuel",    value: car.details.fuel },
+                                                            { label: "Seats",   value: `${car.details.seats} seats` },
+                                                        ].map(({ label, value }) => (
+                                                            <div key={label} className="rounded-xl bg-slate-50 px-2 py-1">
+                                                                <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{label}</div>
+                                                                <div className="mt-0.5 text-xs font-semibold text-slate-700">{value}</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* Fuel info */}
+                                                {(() => {
+                                                    const fr = calcMonthlyFuelCost(car, form.budi95Eligible);
+                                                    if (!fr) return (
+                                                        <div className="mt-2 rounded-xl border border-slate-200 bg-slate-100 px-2 py-1">
+                                                            <div className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Monthly Fuel</div>
+                                                            <div className="mt-0.5 text-sm font-bold text-slate-500">Electric — no fuel</div>
+                                                        </div>
+                                                    );
+                                                    return (
+                                                        <div className="mt-2 rounded-xl border border-sky-200 bg-sky-50 px-2 py-1">
+                                                            <div className="text-[10px] font-semibold uppercase tracking-wide text-sky-500">Est. Monthly Fuel</div>
+                                                            <div className="mt-0.5 text-sm font-bold text-sky-700">
+                                                                RM {fr.cost.toFixed(2)}
+                                                                <span className="ml-1 text-[10px] font-normal text-sky-500">~{fr.liters}L / {MONTHLY_KM} km</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })()}
+
+                                                <div className="mt-2 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                                                    Full financial details available in analysis
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Suggested Actions */}
                             <div className="mt-4 space-y-2">
                                 {["Visit nearby dealerships", "Compare top models", "Plan emergency buffer"].map((x, i) => (
                                     <div key={x} className="reveal flex items-center gap-2 rounded-2xl bg-slate-50 p-3 text-slate-700" style={{ animationDelay: `${300 + i * 80}ms` }}>
@@ -1166,14 +1283,16 @@ function App() {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Right Column: Profile Recap */}
                         <div className={`${panel} card-pop reveal s3`}>
                             <div className="text-2xl font-bold">Your profile recap</div>
                             <div className="mt-4 space-y-3">
                                 {[
-                                    ["Monthly salary",      form.monthlySalary,                Landmark     ],
-                                    ["Current savings",     form.currentSavings,               Wallet       ],
-                                    ["Monthly commitments", form.monthlyCommitments,           ClipboardList],
-                                    ["Desired car target",  form.desiredCarPrice || "Not set", Car          ],
+                                    ["Monthly salary",      form.monthlySalary,      Landmark],
+                                    ["Current savings",     form.currentSavings,     Wallet],
+                                    ["Monthly commitments", form.monthlyCommitments, ClipboardList],
+                                    ["Desired car target",  form.desiredCarPrice || "Not set", Car],
                                 ].map(([label, value, Icon], i) => (
                                     <div key={label} className="reveal rounded-2xl bg-slate-50 p-4" style={{ animationDelay: `${200 + i * 80}ms` }}>
                                         <div className="inline-flex items-center gap-2 text-sm text-slate-500">
@@ -1187,10 +1306,17 @@ function App() {
                             </div>
                         </div>
                     </section>
+
+                    {/* Action Buttons */}
                     <section className="flex flex-wrap gap-3">
-                        <button onClick={() => setPage("dealerships")} className="btn-animated rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white">Back to Dealership Locator</button>
-                        <button onClick={() => setPage("input")} className="btn-animated rounded-full border border-slate-300 bg-white px-6 py-3 text-sm">Re-run Analysis</button>
+                        <button onClick={() => setPage("dealerships")} className="btn-animated rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white">
+                            Back to Dealership Locator
+                        </button>
+                        <button onClick={() => setPage("input")} className="btn-animated rounded-full border border-slate-300 bg-white px-6 py-3 text-sm">
+                            Re-run Analysis
+                        </button>
                     </section>
+
                 </div>
             )}
             {/* ── CAR DETAIL ────────────────────────────────── */}
@@ -1227,45 +1353,40 @@ function App() {
                 ];
 
                 // ── Life Impact Simulator calculations ─────────────────────
-                const li_salary      = Number(form.monthlySalary      || 0);
-                const li_expenses    = Number(form.monthlyExpenses    || 0);
+                const li_salary = Number(form.monthlySalary || 0);
+                const li_expenses = Number(form.monthlyExpenses || 0);
                 const li_commitments = Number(form.monthlyCommitments || 0);
 
-                // Scenario A: buy THIS car — monthly savings left over
-                const li_freeCash_A   = Math.max(li_salary - li_expenses - li_commitments - totalMonthly, 0);
-                const li_savings_A    = Math.round(li_freeCash_A * 60);
+// Scenario A: buy THIS car — monthly savings left over
+                const li_freeCash_A = Math.max(li_salary - li_expenses - li_commitments - totalMonthly, 0);
+                const li_savings_A = Math.round(li_freeCash_A * 60);
 
-                // Scenario B: buy a car that is RM15,000 cheaper (same dp%, rate, tenure)
+// Scenario B: buy a car that is RM15,000 cheaper (same dp%, rate, tenure)
                 const li_cheaperPrice = Math.max(carPrice - 15000, 5000);
-                const li_cheaperDown  = Math.round(li_cheaperPrice * (dp / 100));
-                const li_cheaperFin   = Math.max(li_cheaperPrice - li_cheaperDown, 0);
-                const li_cheaperEmi   = Math.round(
+                const li_cheaperDown = Math.round(li_cheaperPrice * (dp / 100));
+                const li_cheaperFin = Math.max(li_cheaperPrice - li_cheaperDown, 0);
+                const li_cheaperEmi = Math.round(
                     (li_cheaperFin * (1 + (rate / 100) * years)) / Math.max(years * 12, 1)
                 );
-                const li_cheaperIns   = Math.round(calcAnnualInsurance(li_cheaperPrice) / 12);
-                // Fuel, road tax, service assumed similar for a comparable car
-                const li_totalB       = li_cheaperEmi + monthlyFuel + li_cheaperIns + monthlyRT + monthlySvc;
-                const li_freeCash_B   = Math.max(li_salary - li_expenses - li_commitments - li_totalB, 0);
-                const li_savings_B    = Math.round(li_freeCash_B * 60);
-                const li_monthlyDiff  = Math.max(li_freeCash_B - li_freeCash_A, 0);
+                const li_cheaperIns = Math.round(calcAnnualInsurance(li_cheaperPrice) / 12);
+// Fuel, road tax, service assumed similar for a comparable car
+                const li_totalB = li_cheaperEmi + monthlyFuel + li_cheaperIns + monthlyRT + monthlySvc;
+                const li_freeCash_B = Math.max(li_salary - li_expenses - li_commitments - li_totalB, 0);
+                const li_savings_B = Math.round(li_freeCash_B * 60);
+                const li_monthlyDiff = Math.max(li_freeCash_B - li_freeCash_A, 0);
 
-                // Scenario C: invest scenario-B free cash at 7% p.a. (ASB / unit trust) for 60 months
-                const li_mr           = 0.07 / 12; // monthly rate
-                const li_savings_C    = li_freeCash_B > 0
-                    ? Math.round(li_freeCash_B * ((Math.pow(1 + li_mr, 60) - 1) / li_mr))
-                    : 0;
+// Scenario C: invest scenario-B free cash at 7% p.a. (ASB / unit trust) for 60 months
+                const li_mr = 0.07 / 12; // monthly rate
+                const li_savings_C = li_freeCash_B > 0 ? Math.round(li_freeCash_B * ((Math.pow(1 + li_mr, 60) - 1) / li_mr)) : 0;
 
-                const li_max          = Math.max(li_savings_A, li_savings_B, li_savings_C, 1);
-                const li_pct_B        = li_savings_A > 0
-                    ? `+${Math.round(((li_savings_B - li_savings_A) / li_savings_A) * 100)}% vs this car`
-                    : li_savings_B > 0 ? "More savings" : "Similar";
-                const li_pct_C        = li_savings_A > 0
-                    ? `+${Math.round(((li_savings_C - li_savings_A) / li_savings_A) * 100)}% vs this car`
-                    : li_savings_C > 0 ? "Best outcome" : "Similar";
+                const li_max = Math.max(li_savings_A, li_savings_B, li_savings_C, 1);
+
+                const li_pct_B = li_savings_A > 0 ? `+${Math.round(((li_savings_B - li_savings_A) / li_savings_A) * 100)}% vs this car` : li_savings_B > 0 ? "More savings" : "Similar";
+                const li_pct_C = li_savings_A > 0 ? `+${Math.round(((li_savings_C - li_savings_A) / li_savings_A) * 100)}% vs this car` : li_savings_C > 0 ? "Best outcome" : "Similar";
 
                 const li_expA = [
-                    `You spend a lot on this car (high monthly payment + insurance + maintenance).`,
-                    `Because of that, you can save very little each month.`,
+                    "You spend a lot on this car (high monthly payment + insurance + maintenance).",
+                    "Because of that, you can save very little each month.",
                     ``,
                     `Monthly saving: ${formatRM(li_freeCash_A)}`,
                     `5 years = 60 months → ${formatRM(li_freeCash_A)} × 60 = ${formatRM(li_savings_A)}`,
@@ -1274,7 +1395,7 @@ function App() {
 
                 const li_expB = [
                     `You spend less on the car (lower monthly payment of ${formatRM(li_cheaperEmi)}/mo),`,
-                    `allowing you to save more each month.`,
+                    "allowing you to save more each month.",
                     ``,
                     `Monthly saving: ${formatRM(li_freeCash_B)}`,
                     `5 years → ${formatRM(li_freeCash_B)} × 60 = ${formatRM(li_savings_B)}`,
@@ -1282,14 +1403,13 @@ function App() {
                 ].join("\n");
 
                 const li_expC = [
-                    `The extra money you saved from buying a cheaper car`,
-                    `is invested instead of spent.`,
+                    "The extra money you saved from buying a cheaper car, is invested instead of spent.",
                     ``,
                     `Extra money: ${formatRM(li_freeCash_B)}/month`,
-                    `Invested at 7% p.a. growth → total = ${formatRM(li_savings_C)}`,
+                    "Invested at 7% p.a. growth → total = ${formatRM(li_savings_C)}",
                     `Result: Your total wealth after 5 years = ${formatRM(li_savings_C)}`,
                 ].join("\n");
-                // ───────────────────────────────────────────────────────────
+
 
                 return (
                     <div className="space-y-6">
@@ -1421,15 +1541,15 @@ function App() {
 
                                 const leftoverPctt = leftover / salary;
 
-                                if (leftoverPctt >= 0.35) {
+                                if (leftoverPctt >= 0.55) {
                                     label = "Very Comfortable";
                                     colorClass = "text-emerald-600";
                                     advice = "You have a strong financial buffer. Your income comfortably covers all expenses and debts, allowing you to save, invest, or enjoy lifestyle choices without stress.";
-                                } else if (leftoverPctt >= 0.25) {
+                                } else if (leftoverPctt >= 0.35) {
                                     label = "Comfortable";
-                                    colorClass = "text-lime-500";
+                                    colorClass = "text-lime-800";
                                     advice = "Your leftover cash is healthy. You can manage unexpected costs and still have room for savings or discretionary spending, though careful planning is always good.";
-                                } else if (leftoverPctt >= 0.15) {
+                                } else if (leftoverPctt >= 0.20) {
                                     label = "Tight";
                                     colorClass = "text-amber-600";
                                     advice = "Your leftover cash is limited. Avoid taking new debts or unnecessary expenses, and try to boost savings to maintain financial stability.";
@@ -1644,6 +1764,7 @@ function App() {
                         </div>
 
                         {/* Life Impact Simulator */}
+
                         <div className={`${panel} card-pop reveal s5`}>
                             <div className="flex items-center gap-3">
                                 <span className="inline-flex rounded-2xl bg-emerald-100 p-2.5 text-emerald-600">
@@ -1658,6 +1779,10 @@ function App() {
                             <p className="mt-5 text-sm text-slate-600 leading-relaxed">
                                 Your car decision today shapes your financial future. Compare three paths and see how much you could save over the next 5 years.
                             </p>
+
+                            <div className="space-y-4 rounded-2xl bg-white p-4 border border-slate-200">
+
+                            </div>
 
                             {/* Visual proportion bars */}
                             <div className="mt-5 space-y-3 rounded-2xl bg-slate-50 p-4 border border-slate-200">
