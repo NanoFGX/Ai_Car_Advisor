@@ -1442,7 +1442,7 @@ function App() {
                                     <div className="text-xs uppercase tracking-widest text-slate-300">Payment per month</div>
                                     <div className="mt-1 text-4xl font-black">{formatRM(monthlyEmi)}</div>
                                     <div className="mt-1 text-s text-slate-400">
-                                        This is <strong>{((monthlyEmi / analysis.disposableIncome) * 100).toFixed(1)}%</strong> of your monthly income
+                                        This is <strong>{((monthlyEmi / form.monthlySalary) * 100).toFixed(1)}%</strong> of your monthly income
                                     </div>
                                 </div>
 
@@ -1491,7 +1491,7 @@ function App() {
                                         </div>
                                         {/* Percentage of salary */}
                                         <div className="mt-1 text-xs text-slate-300">
-                                            This is <strong>{((totalMonthly / analysis.disposableIncome) * 100).toFixed(1)}%</strong> of your monthly income
+                                            This is <strong>{((totalMonthly / form.monthlySalary) * 100).toFixed(1)}%</strong> of your monthly income
                                         </div>
                                     </div>
                                 </div>
