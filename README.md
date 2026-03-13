@@ -2,7 +2,7 @@
 
 **Live Demo:** https://ai-smart-car-advisor-master.vercel.app/
 
-**Youtube Pitching Video** : https://youtu.be/MZUg05WbFe0
+**Youtube Pitching Video** : https://www.youtube.com/watch?v=3dqfe8eYor8
 
 DriveWise AI is an interactive financial literacy platform that helps users make **informed, responsible car purchasing decisions**. 
 
